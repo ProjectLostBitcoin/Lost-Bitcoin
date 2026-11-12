@@ -11,7 +11,6 @@ ENV HOST=0.0.0.0 \
     LOST_BITCOIN_DB=/data/lost_bitcoin.db \
     LOST_BITCOIN_REPORTS_DIR=/data/generated_reports
 
-VOLUME ["/data"]
 EXPOSE 8080
 
 CMD ["python3", "app.py"]
