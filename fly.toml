@@ -1,0 +1,28 @@
+# Lost Bitcoin — Fly.io config (fallback host; see DEPLOY.md).
+# Before first deploy:  fly volumes create lost_bitcoin_data --size 1 --region yyz
+app = "lost-bitcoin"
+primary_region = "yyz"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  HOST = "0.0.0.0"
+  PORT = "8080"
+  LOST_BITCOIN_DB = "/data/lost_bitcoin.db"
+  LOST_BITCOIN_REPORTS_DIR = "/data/generated_reports"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[mounts]]
+  source = "lost_bitcoin_data"
+  destination = "/data"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

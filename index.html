@@ -1,0 +1,1133 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Project Lost Bitcoin | Find What You Forgot</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230f5c63'/%3E%3Ctext x='32' y='44' font-size='34' font-family='sans-serif' font-weight='bold' fill='%23e8a838' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+
+    margin: 0;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    background: #f0eee9;
+
+    color: #1f2a26;
+
+}
+
+header {
+
+    background: #0b3c40;
+
+    color: white;
+
+    padding: 22px 7%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.logo {
+
+    font-size: 21px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+
+}
+
+.logo span { color: #e8a838; }
+
+.header-label {
+
+    font-size: 13px;
+
+    color: #bcd4d1;
+
+}
+
+main {
+
+    max-width: 760px;
+
+    margin: 65px auto;
+
+    padding: 0 22px;
+
+}
+
+.card {
+
+    background: #fffefa;
+
+    border-radius: 16px;
+
+    padding: 42px;
+
+    box-shadow: 0 8px 35px rgba(31,42,38,.08);
+
+}
+
+h1 {
+
+    font-size: 42px;
+
+    line-height: 1.15;
+
+    letter-spacing: -1.5px;
+
+    margin: 15px 0;
+
+}
+
+h2 { font-size: 27px; }
+
+p {
+
+    line-height: 1.7;
+
+    color: #5d6b62;
+
+}
+
+.eyebrow {
+
+    color: #0f5c63;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+.button {
+
+    display: inline-block;
+
+    border: none;
+
+    background: #0f5c63;
+
+    color: #ffffff;
+
+    padding: 16px 25px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    margin-top: 20px;
+
+}
+
+.button:hover { background: #0b4a4f; }
+
+.secondary {
+
+    background: #e7e2d6;
+
+    color: #1f2a26;
+
+}
+
+.secondary:hover { background: #d8d2c2; }
+
+.option {
+
+    display: block;
+
+    width: 100%;
+
+    text-align: left;
+
+    background: #fffefa;
+
+    border: 1px solid #ddd8cb;
+
+    padding: 17px;
+
+    border-radius: 9px;
+
+    margin: 10px 0;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    color: #22332e;
+
+}
+
+.option:hover {
+
+    border-color: #0f5c63;
+
+    background: #eef6f5;
+
+}
+
+input {
+
+    width: 100%;
+
+    padding: 15px;
+
+    border: 1px solid #ddd8cb;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    margin-top: 12px;
+
+}
+
+.progress {
+
+    height: 7px;
+
+    background: #e3ded2;
+
+    border-radius: 10px;
+
+    margin: 22px 0 35px;
+
+    overflow: hidden;
+
+}
+
+.progress-bar {
+
+    height: 100%;
+
+    width: 0;
+
+    background: #0f5c63;
+
+    transition: width .3s;
+
+}
+
+.report-section {
+
+    border-top: 1px solid #e7ecef;
+
+    padding: 20px 0;
+
+}
+
+.report-section h3 { margin-bottom: 8px; }
+
+.badge {
+
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    background: #fbeed3;
+
+    border-radius: 20px;
+
+    color: #6b4e12;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+.notice {
+
+    background: #eaf3f2;
+
+    border-radius: 10px;
+
+    padding: 17px;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    color: #47635c;
+
+}
+
+.hidden { display: none; }
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #7d8579;
+
+    font-size: 12px;
+
+}
+
+@media(max-width:600px) {
+
+    main { margin: 25px auto; }
+
+    .card { padding: 25px 20px; }
+
+    h1 { font-size: 34px; }
+
+    header { padding: 18px 20px; }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">LOST <span>BITCOIN</span></div>
+
+    <div class="header-label">Your personal Bitcoin investigation</div>
+
+</header>
+
+<main>
+
+<!-- HOMEPAGE -->
+
+<section class="card" id="home">
+
+    <div class="eyebrow">Project Lost Bitcoin</div>
+
+    <h1>Think you might have Bitcoin you've forgotten about?</h1>
+
+    <p>Maybe you bought Bitcoin years ago. Maybe you lost access to an old wallet or exchange account.</p>
+
+    <p>You don't need to remember everything. Tell us what you can, and we'll help you investigate the rest.</p>
+
+    <button class="button" onclick="startFlow('lost_bitcoin')">I THINK I'VE LOST BITCOIN →</button>
+
+    <br>
+
+    <button class="button secondary" onclick="startFlow('bitcoin_address')">I HAVE A BITCOIN ADDRESS →</button>
+
+    <div id="resumeBox" style="margin-top:30px">
+        <p style="font-size:14px">Already started? Resume with your email — your answers are saved.</p>
+        <input id="resumeEmail" type="email" placeholder="Your email address">
+        <button class="button secondary" onclick="resumeFlow()">RESUME MY INVESTIGATION</button>
+        <p id="resumeMsg" style="font-size:13px"></p>
+    </div>
+
+    <p style="font-size:13px;margin-top:25px">
+
+        Simple questions. Personalized guidance. No technical knowledge required.
+
+    </p>
+
+</section>
+
+<!-- QUESTIONNAIRE -->
+
+<section class="card hidden" id="questions">
+
+    <div class="eyebrow">Your investigation</div>
+
+    <div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+    <div id="questionArea"></div>
+
+</section>
+
+<!-- START: name + email -->
+
+<section class="card hidden" id="start">
+    <div class="eyebrow">Start your investigation</div>
+    <h1>A couple of details first.</h1>
+    <p>So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.</p>
+    <input id="startName" type="text" placeholder="Your name">
+    <input id="startEmail" type="email" placeholder="Your email address">
+    <button class="button" onclick="beginInvestigation()">CONTINUE →</button>
+    <p id="startMsg" style="font-size:13px"></p>
+</section>
+
+<!-- ADDRESS FLOW -->
+
+<section class="card hidden" id="address">
+    <div class="eyebrow">Wallet investigation</div>
+    <h1>Enter a Bitcoin address.</h1>
+    <p>We'll check it against the public blockchain and prepare your Wallet Report. First address $4.99, each additional address $1.99. An address balance does not prove ownership.</p>
+    <input id="addrInput" type="text" placeholder="Bitcoin address (e.g. 1A1z…, 3…, bc1…)">
+    <input id="addrLabel" type="text" placeholder="Label (optional) — e.g. 'old laptop wallet'">
+    <button class="button" onclick="submitAddress()">CHECK THIS ADDRESS →</button>
+    <br>
+    <button class="button secondary" onclick="finishAddresses()">SEE MY RESULTS →</button>
+    <p id="addrMsg" style="font-size:13px"></p>
+    <div id="addrList"></div>
+</section>
+
+<!-- DEMO CHECKOUT -->
+
+<section class="card hidden" id="pay">
+    <div class="eyebrow">Checkout</div>
+    <h1>Almost yours.</h1>
+    <div id="payDetails"></div>
+    <div class="notice">Demo checkout — no real money moves in this review version. When Stripe is connected, this step becomes Stripe's secure hosted checkout and this demo disappears automatically.</div>
+    <button class="button" onclick="confirmDemoPay()">PAY (DEMO) →</button>
+    <br>
+    <button class="button secondary" onclick="show('report')">BACK</button>
+    <p id="payMsg" style="font-size:13px"></p>
+</section>
+
+<!-- AI GUIDED NEXT STEPS -->
+
+<section class="card hidden" id="walk">
+    <div class="eyebrow">AI Guided Next Steps</div>
+    <h1>Let's work through your steps.</h1>
+    <p>Everything I say comes from your own investigation record. I won't guess, and I'll never ask for seed phrases or passwords.</p>
+    <div id="walkLog"></div>
+    <input id="walkInput" type="text" placeholder="Try: next step · list my steps · what's confirmed?">
+    <button class="button" onclick="sendWalk()">SEND →</button>
+</section>
+
+<!-- REPORT -->
+
+<section class="card hidden" id="report">
+
+    <div class="eyebrow">Your results</div>
+
+    <h1>Your investigation report</h1>
+
+    <p>We've organized what you've told us and identified your best starting points.</p>
+
+    <div id="reportContent"></div>
+
+    <div class="notice">
+
+        This report is based on information you provided. It does not independently verify Bitcoin ownership, balances or recoverability.
+
+    </div>
+
+    <h2 style="margin-top:35px">Ready to investigate further?</h2>
+
+    <p>Your full Investigation Report is $9.99. You can also add AI Guided Next Steps ($6.99) and have an AI chat bot walk you through each proposed next step.</p>
+
+    <button class="button" onclick="showUpgrade()">CONTINUE MY INVESTIGATION →</button>
+
+    <br>
+
+    <button class="button secondary" onclick="window.print()">PRINT / SAVE REPORT</button>
+
+    <br>
+
+    <button class="button secondary" onclick="location.reload()">START OVER</button>
+
+</section>
+
+<!-- UPGRADE -->
+
+<section class="card hidden" id="upgrade">
+
+    <div class="eyebrow">The next step</div>
+
+    <h1>Let's investigate further.</h1>
+
+    <p>Your initial investigation has identified potential leads. Now imagine having an investigator available to guide you through each one.</p>
+
+    <div class="report-section">
+
+        <h3>AI-powered investigation</h3>
+
+        <p>Ask questions in ordinary English. Get help searching old records, identifying wallets and understanding transaction evidence.</p>
+
+    </div>
+
+    <div class="report-section">
+
+        <h3>Remembered investigation history</h3>
+
+        <p>Your original answers and findings carry forward. No need to start over.</p>
+
+    </div>
+
+    <div class="report-section">
+
+        <h3>Step-by-step guidance</h3>
+
+        <p>Work through your strongest leads with help at every stage.</p>
+
+    </div>
+
+    <h2>$6.99 USD</h2>
+
+    <p>AI Guided Next Steps — one-time price. An AI chat bot walks you through your proposed next steps, in plain English. Payments are not connected in this prototype. (Separate from the $9.99 Investigation Report and the $4.99 Wallet Report.)</p>
+
+    <button class="button" onclick="alert('Premium AI investigation is coming soon!')">
+
+        PREMIUM INVESTIGATION — COMING SOON
+
+    </button>
+
+    <br>
+
+    <button class="button secondary" onclick="show('report')">BACK TO MY REPORT</button>
+
+</section>
+
+</main>
+
+<footer>
+
+    PROJECT LOST BITCOIN · Investigate with confidence.<br><br>
+
+    Never share your seed phrase or private keys with an unknown service.<br><br>
+
+    <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · hello@lostbitcoin.org
+
+</footer>
+
+<script>
+
+const answers = {};
+
+const questions = [
+
+    {
+
+        key:"source",
+
+        title:"Where do you think your Bitcoin originally came from?",
+
+        options:[
+
+            "I bought it through an exchange",
+
+            "I stored it in a wallet on a computer",
+
+            "I used a mobile or online wallet",
+
+            "Someone sent Bitcoin to me",
+
+            "I mined Bitcoin",
+
+            "I'm not sure"
+
+        ]
+
+    },
+
+    {
+
+        key:"exchange",
+
+        title:"Do you remember the exchange or website name?",
+
+        condition:()=>answers.source==="I bought it through an exchange",
+
+        type:"text",
+
+        placeholder:"For example, Mt. Gox, Coinbase or Bitstamp"
+
+    },
+
+    {
+
+        key:"year",
+
+        title:"Approximately when did you acquire your Bitcoin?",
+
+        options:[
+
+            "2009–2011","2012–2013","2014–2015",
+
+            "2016–2017","2018–2020","2021 or later",
+
+            "I don't remember"
+
+        ]
+
+    },
+
+    {
+
+        key:"amount",
+
+        title:"Do you remember approximately how much Bitcoin you had?",
+
+        type:"text",
+
+        placeholder:"For example, 2 BTC, $500 worth, or I don't know"
+
+    },
+
+    {
+
+        key:"purchase",
+
+        title:"How did you originally acquire it?",
+
+        options:[
+
+            "I purchased it with money",
+
+            "Someone transferred it to me",
+
+            "I mined it",
+
+            "A combination of these",
+
+            "I don't remember"
+
+        ]
+
+    },
+
+    {
+
+        key:"email",
+
+        title:"Can you still access the email account you used back then?",
+
+        options:["Yes","No","I'm not sure"]
+
+    },
+
+    {
+
+        key:"device",
+
+        title:"Do you still have the original computer, phone or backup?",
+
+        options:["Yes","No","I have an external drive or backup","I'm not sure"]
+
+    },
+
+    {
+
+        key:"records",
+
+        title:"Do you have any old purchase records or transaction evidence?",
+
+        options:[
+
+            "Purchase confirmation emails",
+
+            "Bank or credit card statements",
+
+            "Transaction IDs or wallet addresses",
+
+            "Several of these",
+
+            "None that I know of",
+
+            "I'm not sure"
+
+        ]
+
+    },
+
+    {
+
+        key:"withdrawal",
+
+        title:"Do you remember ever moving Bitcoin out of the original exchange or wallet?",
+
+        options:["Yes","No","Possibly","I don't remember"]
+
+    },
+
+    {
+
+        key:"account",
+
+        title:"Can you still access the original exchange or wallet account?",
+
+        options:["Yes","No","I haven't tried","The service may no longer exist"]
+
+    }
+
+];
+
+let current = 0;
+
+function show(id) {
+
+    ["home","start","address","questions","report","upgrade","pay","walk"].forEach(name=>{
+
+        document.getElementById(name).classList.add("hidden");
+
+    });
+
+    document.getElementById(id).classList.remove("hidden");
+
+    window.scrollTo(0,0);
+
+}
+
+function start() {
+
+    current=0;
+
+    show("questions");
+
+    renderQuestion();
+
+}
+
+function renderQuestion() {
+
+    while(current<questions.length &&
+
+          questions[current].condition &&
+
+          !questions[current].condition()) {
+
+        current++;
+
+    }
+
+    if(current>=questions.length) {
+
+        buildReport();
+
+        return;
+
+    }
+
+    const q=questions[current];
+
+    document.getElementById("bar").style.width =
+
+        (current/questions.length*100)+"%";
+
+    let html=`<h2>${q.title}</h2>`;
+
+    if(q.options) {
+
+        q.options.forEach(option=>{
+
+            html+=`<button class="option" data-key="${q.key}" data-value="${encodeURIComponent(option)}">${option}</button>`;
+
+        });
+
+    } else {
+
+        html+=`<input id="textAnswer" placeholder="${q.placeholder}" onkeydown="if(event.key==='Enter'){submitText('${q.key}')}" autofocus>
+
+        <button class="button" onclick="submitText('${q.key}')">CONTINUE →</button>`;
+
+    }
+
+    document.getElementById("questionArea").innerHTML=html;
+
+    document.querySelectorAll("#questionArea .option").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            answer(button.dataset.key, decodeURIComponent(button.dataset.value));
+
+        });
+
+    });
+
+}
+
+async function answer(key,value) {
+
+    try { await saveAnswerToServer(key, value); } catch(e) { return; }
+
+    try { await saveAnswerToServer(key, value); } catch(e) { return; }
+
+    answers[key]=value;
+
+    current++;
+
+    renderQuestion();
+
+}
+
+async function submitText(key) {
+
+    const value=document.getElementById("textAnswer").value.trim();
+
+    if(!value) {
+
+        alert("Please enter an answer, or type 'I don't know'.");
+
+        return;
+
+    }
+
+    answers[key]=value;
+
+    current++;
+
+    renderQuestion();
+
+}
+
+document.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const map = { resumeEmail: () => resumeFlow(), startEmail: () => beginInvestigation(),
+                  addrInput: () => submitAddress(), walkInput: () => sendWalk() };
+    if (map[e.target.id]) { e.preventDefault(); map[e.target.id](); }
+});
+
+function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
+
+/* ---- Backend session (Priority 3) ---- */
+let session = null;
+try { session = JSON.parse(localStorage.getItem("lb_session") || "null"); } catch(e) { session = null; }
+let pendingStart = "lost_bitcoin";
+const myAddresses = [];
+
+async function api(path, body) {
+    const options = { method: body ? "POST" : "GET",
+        headers: { "Content-Type": "application/json" } };
+    if (session && session.token) options.headers["Authorization"] = "Bearer " + session.token;
+    if (body) options.body = JSON.stringify(body);
+    const res = await fetch(path, options);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Something went wrong.");
+    return data;
+}
+
+function startFlow(kind) { pendingStart = kind; show("start"); }
+
+async function beginInvestigation() {
+    const name = document.getElementById("startName").value.trim();
+    const email = document.getElementById("startEmail").value.trim();
+    const msg = document.getElementById("startMsg");
+    if (!name || !email) { msg.textContent = "Please add your name and email so we can save your investigation."; return; }
+    try {
+        const data = await api("/api/start", { name, email, starting_point: pendingStart });
+        session = data;
+        localStorage.setItem("lb_session", JSON.stringify(data));
+        if (data.starting_point === "bitcoin_address") { show("address"); }
+        else { current = 0; show("questions"); renderQuestion(); }
+    } catch (e) {
+        // Offline/demo mode: the page still works locally, nothing is saved.
+        msg.textContent = "We couldn't reach the server, so this session won't be saved. (" + e.message + ")";
+        if (pendingStart === "bitcoin_address") { show("address"); }
+        else { current = 0; show("questions"); renderQuestion(); }
+    }
+}
+
+async function resumeFlow() {
+    const email = document.getElementById("resumeEmail").value.trim();
+    const msg = document.getElementById("resumeMsg");
+    try {
+        const data = await api("/api/resume", { email });
+        session = data;
+        localStorage.setItem("lb_session", JSON.stringify(data));
+        const full = await api("/api/investigation?investigation_id=" + data.investigation_id);
+        (full.answers || []).forEach(a => { answers[a.question_key] = a.answer_value; });
+        (full.addresses || []).forEach(a => myAddresses.push(a.address));
+        msg.textContent = "Welcome back — your saved investigation has been restored.";
+        if (data.starting_point === "bitcoin_address") { show("address"); renderAddrList(); }
+        else {
+            const firstMissing = questions.findIndex(q => !(q.key in answers));
+            if (firstMissing === -1) { buildReport(); }
+            else { current = firstMissing; show("questions"); renderQuestion(); }
+        }
+    } catch (e) { msg.textContent = e.message; }
+}
+
+async function saveAnswerToServer(key, value) {
+    if (!session) return;
+    try { await api("/api/answer", { investigation_id: session.investigation_id, question_key: key, answer_value: value }); }
+    catch (e) { alert(e.message); throw e; }
+}
+
+async function submitAddress() {
+    const input = document.getElementById("addrInput");
+    const label = document.getElementById("addrLabel");
+    const msg = document.getElementById("addrMsg");
+    const address = input.value.trim();
+    if (!address) { msg.textContent = "Please enter an address."; return; }
+    if (!session) { msg.textContent = "Please start with your name and email first so we can save this."; return; }
+    try {
+        await api("/api/address", { investigation_id: session.investigation_id, address, label: label.value.trim() });
+        myAddresses.push(address);
+        input.value = ""; label.value = "";
+        msg.textContent = "Address saved. Add another, or see your results.";
+        renderAddrList();
+    } catch (e) { msg.textContent = e.message; }
+}
+
+function renderAddrList() {
+    document.getElementById("addrList").innerHTML = myAddresses.length
+        ? "<p><b>Your addresses (" + myAddresses.length + "):</b><br>" + myAddresses.map(esc).join("<br>") + "</p>" : "";
+}
+
+async function finishAddresses() {
+    if (!session) { show("report"); return; }
+    try {
+        const outcome = await api("/api/run", { investigation_id: session.investigation_id });
+        buildAddressReport(outcome);
+    } catch (e) { alert(e.message); }
+}
+
+function buildAddressReport(outcome) {
+    show("report");
+    let html = '<div class="report-section"><h3>Blockchain findings (confirmed)</h3>';
+    (outcome.address_results || []).forEach(r => {
+        if (r.status === "checked" && r.info) {
+            html += `<p><b>${esc(r.address)}</b><br>Transactions: ${r.info.tx_count} · Balance: ${(r.info.balance_satoshis/100000000).toFixed(8)} BTC<br><span style="font-size:13px">A balance does not prove ownership or that Bitcoin can be accessed.</span></p>`;
+        } else {
+            html += `<p><b>${esc(r.address)}</b><br>We couldn't complete a blockchain check for this address right now — no conclusion can be drawn.</p>`;
+        }
+    });
+    const n = myAddresses.length || (outcome.address_results || []).length;
+    const price = n ? (4.99 + 1.99 * (n - 1)).toFixed(2) : "4.99";
+    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b>.</p><button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div></div>`;
+    document.getElementById("reportContent").innerHTML = html;
+    refreshPurchases();
+}
+
+/* ---- Purchases, demo checkout, report download, walkthrough ---- */
+let pendingDemo = null;
+
+async function buyProduct(product) {
+    if (!session) { alert("Please start with your name and email first so we can save your purchase."); return; }
+    try {
+        const co = await api("/api/checkout", { investigation_id: session.investigation_id, product });
+        if (co.mode === "stripe") { window.location.href = co.url; return; }
+        pendingDemo = { token: co.demo_token, product };
+        document.getElementById("payDetails").innerHTML =
+            `<div class="report-section"><h3>${esc(co.product_name)}</h3><p>Total: <b>$${(co.amount_cents/100).toFixed(2)} USD</b></p></div>`;
+        show("pay");
+    } catch (e) { alert(e.message); }
+}
+
+async function confirmDemoPay() {
+    const msg = document.getElementById("payMsg");
+    try {
+        await api("/api/demo-pay", { investigation_id: session.investigation_id, demo_token: pendingDemo.token });
+        const product = pendingDemo.product; pendingDemo = null;
+        if (product === "ai_walkthrough") { show("walk"); walkSay("bot", "Welcome! Say 'next step' and I'll take you through your first proposed step, one at a time."); }
+        else { show("report"); await downloadReport(); refreshPurchases(); }
+    } catch (e) { msg.textContent = e.message; }
+}
+
+async function downloadReport() {
+    try {
+        const rep = await api("/api/report", { investigation_id: session.investigation_id });
+        const blob = new Blob([rep.markdown], { type: "text/markdown" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "lost-bitcoin-report.md"; a.click();
+        const holder = document.getElementById("reportFile");
+        if (holder) holder.innerHTML = '<div class="notice">Your full report has been generated and downloaded. A copy is saved to your investigation record.</div>';
+    } catch (e) { alert(e.message); }
+}
+
+async function refreshPurchases() {
+    if (!session) return;
+    try {
+        const data = await api("/api/purchases?investigation_id=" + session.investigation_id);
+        const owned = new Set(data.purchases.filter(x => x.status === "completed").map(x => x.product));
+        const rb = document.getElementById("reportBtn"), wb = document.getElementById("walkBtn"), wal = document.getElementById("walletBtn");
+        if (rb && owned.has("investigation_report")) { rb.textContent = "DOWNLOAD MY INVESTIGATION REPORT →"; rb.onclick = () => downloadReport(); }
+        if (wal && owned.has("wallet_report")) { wal.textContent = "DOWNLOAD MY WALLET REPORT →"; wal.onclick = () => downloadReport(); }
+        if (wb && owned.has("ai_walkthrough")) { wb.textContent = "OPEN AI GUIDED NEXT STEPS →"; wb.onclick = () => show("walk"); }
+    } catch (e) { /* offers remain in purchase mode */ }
+}
+
+function walkSay(who, text) {
+    const log = document.getElementById("walkLog");
+    const safe = esc(text).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+    log.innerHTML += `<div class="report-section"><p><b>${who === "bot" ? "Investigator" : "You"}:</b> ${safe}</p></div>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+async function sendWalk() {
+    const input = document.getElementById("walkInput");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    walkSay("user", text);
+    try {
+        const data = await api("/api/walkthrough", { investigation_id: session.investigation_id, message: text });
+        walkSay("bot", data.reply);
+    } catch (e) { walkSay("bot", e.message); }
+}
+
+async function runBackendAssessment() {
+    if (!session) return;
+    try {
+        const outcome = await api("/api/run", { investigation_id: session.investigation_id });
+        const a = outcome.assessment;
+        if (!a) return;
+        let html = '<div class="report-section"><h3>Your preliminary assessment (saved to your investigation)</h3>';
+        if (a.credible_lead) {
+            html += `<p>We found credible lead(s): <b>${esc(a.leads.join(", "))}</b>.</p>
+            <p>Your full <b>Investigation Report is $9.99 USD</b>, and you can add <b>AI Guided Next Steps for $6.99 USD</b> — an AI chat bot that walks you through each proposed next step.</p>
+            <button class="button" id="reportBtn" onclick="buyProduct('investigation_report')">GET MY INVESTIGATION REPORT — $9.99 →</button>
+            <br>
+            <button class="button secondary" id="walkBtn" onclick="buyProduct('ai_walkthrough')">AI GUIDED NEXT STEPS — $6.99</button>
+            <div id="reportFile"></div>`;
+        } else {
+            html += "<p>Based on your answers so far, we haven't found a credible actionable lead yet — your free assessment stays open, and more answers may change that.</p>";
+        }
+        if (a.missing_information && a.missing_information.length) {
+            html += `<p>Still unknown: ${esc(a.missing_information.join(", "))}.</p>`;
+        }
+        html += "</div>";
+        document.getElementById("reportContent").innerHTML += html;
+        refreshPurchases();
+    } catch (e) { /* local report still stands if the server is unreachable */ }
+}
+
+function buildReport() {
+
+    show("report");
+
+    document.getElementById("bar").style.width="100%";
+
+    let steps=[];
+
+    if(answers.email==="Yes") {
+
+        steps.push(["Search your original email","Search for the exchange name, Bitcoin, BTC, purchase, deposit, withdrawal and transaction confirmation. Focus on the approximate year you acquired Bitcoin."]);
+
+    }
+
+    if(answers.source==="I bought it through an exchange") {
+
+        steps.push(["Investigate the historical exchange","Research "+(answers.exchange||"the exchange you used")+". Establish its history, current status and legitimate account recovery options."]);
+
+    }
+
+    if(["Yes","Possibly","I don't remember"].includes(answers.withdrawal)) {
+
+        steps.push(["Look for Bitcoin withdrawals","Search for withdrawal confirmations, destination addresses and transaction IDs. These may help establish whether Bitcoin moved to another wallet."]);
+
+    }
+
+    if(["Yes","I have an external drive or backup","I'm not sure"].includes(answers.device)) {
+
+        steps.push(["Investigate old devices and backups","Identify old computers, external drives and backups. Preserve original devices and avoid reinstalling or resetting them."]);
+
+    }
+
+    if(answers.records!=="None that I know of") {
+
+        steps.push(["Collect old transaction records","Preserve bank statements, screenshots, purchase confirmations and transaction records. Compare dates and amounts."]);
+
+    }
+
+    if(answers.account==="Yes") {
+
+        steps.push(["Check your original account","Use the verified official website or application. Review balances, deposits, withdrawals and transaction history."]);
+
+    }
+
+    if(steps.length===0) {
+
+        steps.push(["Establish your original Bitcoin history","Start by identifying the approximate year, original exchange or wallet, and any email accounts or devices you may have used."]);
+
+    }
+
+    let html=`
+
+    <div class="report-section">
+
+        <h3>Your Bitcoin history</h3>
+
+        <p><b>Original source:</b> ${esc(answers.source||"Unknown")}</p>
+
+        <p><b>Exchange:</b> ${esc(answers.exchange||"Not identified")}</p>
+
+        <p><b>Approximate year:</b> ${esc(answers.year||"Unknown")}</p>
+
+        <p><b>Estimated amount:</b> ${esc(answers.amount||"Unknown")}</p>
+
+        <p><b>Acquisition:</b> ${esc(answers.purchase||"Unknown")}</p>
+
+    </div>
+
+    <div class="report-section">
+
+        <h3>Your available evidence</h3>
+
+        <p><b>Email access:</b> ${esc(answers.email||"Unknown")}</p>
+
+        <p><b>Devices/backups:</b> ${esc(answers.device||"Unknown")}</p>
+
+        <p><b>Records:</b> ${esc(answers.records||"Unknown")}</p>
+
+        <p><b>Possible withdrawals:</b> ${esc(answers.withdrawal||"Unknown")}</p>
+
+        <p><b>Account access:</b> ${esc(answers.account||"Unknown")}</p>
+
+    </div>
+
+    <div class="report-section">
+
+        <h3>Your recommended investigation steps</h3>`;
+
+    steps.slice(0,3).forEach((step,index)=>{
+
+        html+=`<div style="margin:22px 0">
+
+            <span class="badge">PRIORITY ${index+1}</span>
+
+            <h3>${esc(step[0])}</h3>
+
+            <p>${esc(step[1])}</p>
+
+        </div>`;
+
+    });
+
+    html+=`</div>`;
+
+    document.getElementById("reportContent").innerHTML=html;
+
+    runBackendAssessment();
+
+}
+
+function showUpgrade() {
+
+    show("upgrade");
+
+}
+
+</script>
+
+</body>
+
+</html>
+
