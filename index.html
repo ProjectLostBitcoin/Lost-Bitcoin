@@ -279,6 +279,56 @@ input {
 
 }
 
+.sample-report {
+
+    background: #fffdf6;
+
+    border: 1.5px dashed #E8A838;
+
+    border-radius: 12px;
+
+    padding: 18px 20px;
+
+    margin: 16px 0;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    color: #3d4a47;
+
+}
+
+.sample-report .sample-tag {
+
+    display: inline-block;
+
+    background: #E8A838;
+
+    color: #3d2c05;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    padding: 4px 10px;
+
+    border-radius: 20px;
+
+    margin-bottom: 8px;
+
+}
+
+.sample-report h4 { color: #0B3C40; margin: 12px 0 4px; font-size: 14px; }
+
+.sample-report ul { margin: 4px 0 4px 18px; padding: 0; }
+
+.sample-report li { margin-bottom: 6px; }
+
+.sample-report .prio { color: #0F5C63; font-weight: 700; }
+
 .hidden { display: none; }
 
 footer {
@@ -911,9 +961,43 @@ function buildAddressReport(outcome) {
     });
     const n = myAddresses.length || (outcome.address_results || []).length;
     const price = n ? (4.99 + 1.99 * (n - 1)).toFixed(2) : "4.99";
-    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b>.</p><button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div></div>`;
+    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b>.</p>${sampleWalletHTML()}<button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div></div>`;
     document.getElementById("reportContent").innerHTML = html;
     refreshPurchases();
+}
+
+/* ---- Sample report previews (fictional examples shown before purchase) ---- */
+function sampleInvestigationHTML() {
+    return `<div class="sample-report">
+    <span class="sample-tag">SAMPLE — FICTIONAL EXAMPLE</span>
+    <p><b>What a full Investigation Report looks like.</b> "Daniel" bought Bitcoin in 2017, changed computers twice, and still had his old laptop and his purchase emails. Here is the heart of his report:</p>
+    <h4>Confirmed findings</h4>
+    <ul>
+      <li>The address he provided was checked against the blockchain: 214 confirmed transactions, balance 0.48320000 BTC. <i>A balance does not prove ownership or that the Bitcoin can be accessed.</i></li>
+    </ul>
+    <h4>Possible leads</h4>
+    <ul>
+      <li>His 2017 laptop is still in his possession — it may hold the original wallet file or a backup.</li>
+      <li>Purchase confirmation emails from the exchange are still in his inbox.</li>
+    </ul>
+    <h4>Recommended next actions — the guidance</h4>
+    <ul>
+      <li><b>Preserve the original device or backup</b> <span class="prio">(high priority)</span> — Do not wipe, update or keep using a device that may hold a wallet. Make a copy first and work from the copy.</li>
+      <li><b>Gather the records you mentioned</b> <span class="prio">(high priority)</span> — Purchase confirmations, statements or transaction IDs can pin down dates, exchanges and addresses — the strongest starting evidence.</li>
+      <li><b>Try the original account first</b> <span class="prio">(medium priority)</span> — Attempt sign-in / account recovery with the original email before assuming the Bitcoin left the exchange.</li>
+    </ul>
+    <p><b>Your</b> report is built exactly this way from <b>your</b> answers: every lead classified (confirmed, strong possibility, possible lead, unknown), the evidence shown, and a prioritised action plan like the one above. Add <b>AI Guided Next Steps ($6.99)</b> and a chat bot walks you through your report's actions one at a time.</p>
+    </div>`;
+}
+
+function sampleWalletHTML() {
+    return `<div class="sample-report">
+    <span class="sample-tag">SAMPLE — FICTIONAL EXAMPLE</span>
+    <p><b>What the full Wallet Report adds</b> for each address: the complete on-chain history (first seen, last active, totals in and out), what the pattern suggests, and a recommended next step for any address still holding a balance — for example:</p>
+    <ul>
+      <li><b>Work out how this address was controlled</b> <span class="prio">(high priority)</span> — A positive confirmed balance remains. The next step is identifying the wallet, device, backup or exchange account that controlled this address — not moving any funds.</li>
+    </ul>
+    </div>`;
 }
 
 /* ---- Purchases, demo checkout, report download, walkthrough ---- */
@@ -993,6 +1077,7 @@ async function runBackendAssessment() {
         if (a.credible_lead) {
             html += `<p>We found credible lead(s): <b>${esc(a.leads.join(", "))}</b>.</p>
             <p>Your full <b>Investigation Report is $9.99 USD</b>, and you can add <b>AI Guided Next Steps for $6.99 USD</b> — an AI chat bot that walks you through each proposed next step.</p>
+            ${sampleInvestigationHTML()}
             <button class="button" id="reportBtn" onclick="buyProduct('investigation_report')">GET MY INVESTIGATION REPORT — $9.99 →</button>
             <br>
             <button class="button secondary" id="walkBtn" onclick="buyProduct('ai_walkthrough')">AI GUIDED NEXT STEPS — $6.99</button>
