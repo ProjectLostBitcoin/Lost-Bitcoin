@@ -637,20 +637,6 @@ const questions = [
 
     {
 
-        key:"exchange",
-
-        title:"Do you remember the exchange or website name?",
-
-        condition:()=>answers.source==="I bought it through an exchange",
-
-        type:"text",
-
-        placeholder:"For example, Mt. Gox, Coinbase or Bitstamp"
-
-    },
-
-    {
-
         key:"year",
 
         title:"Approximately when did you acquire your Bitcoin?",
@@ -664,6 +650,20 @@ const questions = [
             "I don't remember"
 
         ]
+
+    },
+
+    {
+
+        key:"exchange",
+
+        title:"Do you remember the exchange or website name?",
+
+        condition:()=>answers.source==="I bought it through an exchange",
+
+        type:"text",
+
+        placeholder:"For example, Mt. Gox, Coinbase or Bitstamp"
 
     },
 
@@ -839,6 +839,8 @@ function renderQuestion() {
 
     document.getElementById("questionArea").innerHTML=html;
 
+    if(q.key==="exchange") { loadExchangeSuggestions(); }
+
     document.querySelectorAll("#questionArea .option").forEach(button => {
 
         button.addEventListener("click", () => {
@@ -851,9 +853,59 @@ function renderQuestion() {
 
 }
 
-async function answer(key,value) {
+async function loadExchangeSuggestions() {
 
-    try { await saveAnswerToServer(key, value); } catch(e) { return; }
+    const area = document.getElementById("questionArea");
+
+    const box = document.createElement("div");
+
+    box.id = "exchangeHints";
+
+    area.appendChild(box);
+
+    try {
+
+        const era = answers.year || "";
+
+        const res = await fetch("/api/exchange-suggestions?era=" + encodeURIComponent(era));
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        if (!data.suggestions || !data.suggestions.length) return;
+
+        const where = data.detected ? (data.detected.country_name + (data.detected.region ? " (" + data.detected.region + ")" : "")) : "your country";
+
+        let html = `<p style="font-size:14px;margin-top:22px"><b>Not sure?</b> People in <b>${esc(where)}</b> who bought around that time most often used one of these. Tap one if it rings a bell — or just type the name you remember above.</p>`;
+
+        data.suggestions.forEach(sg => {
+
+            html += `<button class="option" data-exchange="${esc(sg.name)}"><b>${esc(sg.name)}</b>${sg.note ? `<br><span style="font-size:13px">${esc(sg.note)}</span>` : ""}</button>`;
+
+        });
+
+        html += `<p style="font-size:12px">Suggestions are guesses based on the country detected from your connection and the era you picked — a starting point, not a conclusion.</p>`;
+
+        box.innerHTML = html;
+
+        box.querySelectorAll("[data-exchange]").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                document.getElementById("textAnswer").value = btn.dataset.exchange;
+
+                submitText("exchange");
+
+            });
+
+        });
+
+    } catch (e) { /* suggestions are optional — the question works without them */ }
+
+}
+
+async function answer(key,value) {
 
     try { await saveAnswerToServer(key, value); } catch(e) { return; }
 

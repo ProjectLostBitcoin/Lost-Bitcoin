@@ -35,12 +35,15 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
+import urllib.request
+import ipaddress
 
 import master_investigation_record as record
 import investigation_controller as controller
 import report_generator
 import payments
 import walkthrough
+import exchange_guide
 
 BASE_DIR = Path(__file__).resolve().parent
 REPORTS_DIR = Path(os.environ.get("LOST_BITCOIN_REPORTS_DIR")
@@ -153,6 +156,54 @@ class Handler(BaseHTTPRequestHandler):
         self._hits[self.client_address[0]] = hits
         return len(hits) > limit
 
+    # -- geolocation (country/region only, for exchange suggestions)
+    _geo_cache = {}
+
+    def _client_ip(self):
+        forwarded = self.headers.get("X-Forwarded-For", "")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        return self.client_address[0]
+
+    def _geo(self):
+        """
+        Best-effort country/region for the caller's IP, used only to
+        tailor exchange suggestions. The IP itself is never stored;
+        any failure returns None and the questionnaire carries on
+        without suggestions.
+        """
+        if os.environ.get("LOST_BITCOIN_TEST_GEO") == "1":
+            return {"country_code": "CA", "country_name": "Canada",
+                    "region": "British Columbia"}
+        ip = self._client_ip()
+        try:
+            parsed = ipaddress.ip_address(ip)
+            if parsed.is_private or parsed.is_loopback or parsed.is_link_local:
+                return None
+        except ValueError:
+            return None
+        if ip in self._geo_cache:
+            return self._geo_cache[ip]
+        result = None
+        try:
+            request = urllib.request.Request(
+                f"https://ipapi.co/{ip}/json/",
+                headers={"User-Agent": "lost-bitcoin/1.0"})
+            with urllib.request.urlopen(request, timeout=3) as response:
+                data = json.loads(response.read().decode())
+            if data.get("country_code"):
+                result = {
+                    "country_code": data.get("country_code", ""),
+                    "country_name": data.get("country_name", ""),
+                    "region": data.get("region", ""),
+                }
+        except Exception:
+            result = None
+        if len(self._geo_cache) > 512:
+            self._geo_cache.clear()
+        self._geo_cache[ip] = result
+        return result
+
     def _authorized_investigation(self, investigation_id):
         """Return the record if the bearer token owns this investigation."""
         auth = self.headers.get("Authorization", "")
@@ -193,6 +244,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_json(200, {"status": "ok", "service": "lost-bitcoin"})
             elif parsed.path == "/api/pricing":
                 self._send_json(200, PRICING)
+            elif parsed.path == "/api/exchange-suggestions":
+                era = parse_qs(parsed.query).get("era", [""])[0]
+                self._send_json(200, exchange_guide.suggestions_payload(
+                    self._geo(), era))
             elif parsed.path == "/api/purchases":
                 inv_id = parse_qs(parsed.query).get("investigation_id", [""])[0]
                 full, error = self._authorized_investigation(inv_id)
