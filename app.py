@@ -127,6 +127,15 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _send_text(self, status, body, content_type):
+        data = body.encode()
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self._security_headers()
+        self.end_headers()
+        self.wfile.write(data)
+
     def _security_headers(self):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
@@ -240,6 +249,20 @@ class Handler(BaseHTTPRequestHandler):
                 self._security_headers()
                 self.end_headers()
                 self.wfile.write(body)
+            elif parsed.path == "/robots.txt":
+                self._send_text(200,
+                    "User-agent: *\nAllow: /\n"
+                    "Sitemap: https://lostbitcoin.org/sitemap.xml\n",
+                    "text/plain; charset=utf-8")
+            elif parsed.path == "/sitemap.xml":
+                self._send_text(200,
+                    '<?xml version="1.0" encoding="UTF-8"?>\n'
+                    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+                    "<url><loc>https://lostbitcoin.org/</loc></url>"
+                    "<url><loc>https://lostbitcoin.org/privacy</loc></url>"
+                    "<url><loc>https://lostbitcoin.org/terms</loc></url>"
+                    "</urlset>",
+                    "application/xml; charset=utf-8")
             elif parsed.path == "/api/health":
                 self._send_json(200, {"status": "ok", "service": "lost-bitcoin"})
             elif parsed.path == "/api/pricing":
