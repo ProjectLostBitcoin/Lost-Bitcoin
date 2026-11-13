@@ -371,6 +371,144 @@ input:focus {
 
 .sample-report .prio { color: #f0b90b; font-weight: 700; }
 
+.offer-panel {
+
+    background: linear-gradient(180deg, rgba(240,185,11,.08), rgba(240,185,11,.02)), #0a1730;
+
+    border: 1px solid rgba(240,185,11,.55);
+
+    border-radius: 14px;
+
+    padding: 28px;
+
+    margin-top: 26px;
+
+    text-align: left;
+
+}
+
+.offer-panel h2 { margin: 12px 0 8px; }
+
+.lead-grid, .compare-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin: 20px 0;
+
+}
+
+.lead-card, .compare-card {
+
+    background: #0d1830;
+
+    border: 1px solid #22345a;
+
+    border-radius: 12px;
+
+    padding: 17px;
+
+}
+
+.lead-card h4, .compare-card h4 { color: #ffffff; margin: 6px 0 8px; }
+
+.lead-card p, .compare-card p, .compare-card li { font-size: 14px; }
+
+.lead-card p, .compare-card p { margin: 0; }
+
+.classification {
+
+    color: #f0b90b;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+
+}
+
+.compare-card.full { border-color: rgba(240,185,11,.65); background: #101f3c; }
+
+.compare-card ul { margin: 8px 0 0 18px; padding: 0; }
+
+.compare-card li { color: #9aa7bd; line-height: 1.55; margin-bottom: 6px; }
+
+.preview-list { border-top: 1px solid #22345a; margin-top: 20px; }
+
+.preview-row {
+
+    display: flex;
+
+    gap: 14px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #22345a;
+
+}
+
+.preview-row .lock { color: #f0b90b; font-size: 18px; line-height: 1.4; }
+
+.preview-row h4 { color: #ffffff; margin: 0 0 4px; }
+
+.preview-row p { margin: 0; font-size: 14px; }
+
+.price-box {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 22px;
+
+    background: #0d1830;
+
+    border: 1px solid #22345a;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin-top: 22px;
+
+}
+
+.price-box .price { color: #ffffff; font-size: 38px; font-weight: 800; line-height: 1; white-space: nowrap; }
+
+.price-box p { margin: 5px 0 0; font-size: 13px; }
+
+.addon-panel {
+
+    border-top: 1px solid #22345a;
+
+    margin-top: 24px;
+
+    padding-top: 20px;
+
+}
+
+.sample-details { margin-top: 18px; }
+
+.sample-details summary {
+
+    color: #f0b90b;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+    padding: 8px 0;
+
+}
+
 .hidden { display: none; }
 
 footer {
@@ -394,6 +532,14 @@ footer {
     h1 { font-size: 34px; }
 
     header { padding: 18px 20px; }
+
+    .lead-grid, .compare-grid { grid-template-columns: 1fr; }
+
+    .offer-panel { padding: 22px 18px; }
+
+    .price-box { display: block; }
+
+    .price-box .button { width: 100%; text-align: center; }
 
 }
 
@@ -513,11 +659,11 @@ footer {
 
 <section class="card hidden" id="report">
 
-    <div class="eyebrow">Your results</div>
+    <div class="eyebrow">Free assessment complete</div>
 
-    <h1>Your investigation report</h1>
+    <h1>Your investigation results</h1>
 
-    <p>We've organized what you've told us and identified your best starting points.</p>
+    <p>We've organized what you've told us and identified your best starting points. If a credible lead is present, your full report offer appears below with the leads it is based on.</p>
 
     <div id="reportContent"></div>
 
@@ -527,69 +673,11 @@ footer {
 
     </div>
 
-    <h2 style="margin-top:35px">Ready to investigate further?</h2>
-
-    <p>Your full Investigation Report is $9.99. You can also add AI Guided Next Steps ($6.99) and have an AI chat bot walk you through each proposed next step.</p>
-
-    <button class="button" onclick="showUpgrade()">CONTINUE MY INVESTIGATION →</button>
-
-    <br>
-
-    <button class="button secondary" onclick="window.print()">PRINT / SAVE REPORT</button>
+    <button class="button secondary" onclick="window.print()">PRINT / SAVE FREE ASSESSMENT</button>
 
     <br>
 
     <button class="button secondary" onclick="location.reload()">START OVER</button>
-
-</section>
-
-<!-- UPGRADE -->
-
-<section class="card hidden" id="upgrade">
-
-    <div class="eyebrow">The next step</div>
-
-    <h1>Let's investigate further.</h1>
-
-    <p>Your initial investigation has identified potential leads. Now imagine having an investigator available to guide you through each one.</p>
-
-    <div class="report-section">
-
-        <h3>AI-powered investigation</h3>
-
-        <p>Ask questions in ordinary English. Get help searching old records, identifying wallets and understanding transaction evidence.</p>
-
-    </div>
-
-    <div class="report-section">
-
-        <h3>Remembered investigation history</h3>
-
-        <p>Your original answers and findings carry forward. No need to start over.</p>
-
-    </div>
-
-    <div class="report-section">
-
-        <h3>Step-by-step guidance</h3>
-
-        <p>Work through your strongest leads with help at every stage.</p>
-
-    </div>
-
-    <h2>$6.99 USD</h2>
-
-    <p>AI Guided Next Steps — one-time price. An AI chat bot walks you through your proposed next steps, in plain English. Payments are not connected in this prototype. (Separate from the $9.99 Investigation Report and the $4.99 Wallet Report.)</p>
-
-    <button class="button" onclick="alert('Premium AI investigation is coming soon!')">
-
-        PREMIUM INVESTIGATION — COMING SOON
-
-    </button>
-
-    <br>
-
-    <button class="button secondary" onclick="show('report')">BACK TO MY REPORT</button>
 
 </section>
 
@@ -771,7 +859,7 @@ let current = 0;
 
 function show(id) {
 
-    ["home","start","address","questions","report","upgrade","pay","walk"].forEach(name=>{
+    ["home","start","address","questions","report","pay","walk"].forEach(name=>{
 
         document.getElementById(name).classList.add("hidden");
 
@@ -1094,6 +1182,112 @@ function sampleWalletHTML() {
     </div>`;
 }
 
+/* ---- Personalized full-report offer ---- */
+function investigationLeadCards(assessment) {
+    const cards = [];
+    (assessment.leads || []).forEach(key => {
+        if (key === "device") {
+            cards.push({
+                title: "Original device or backup",
+                detail: answers.device === "Yes"
+                    ? "You still have the original device. It may hold wallet software, a wallet file or a backup — and it needs protecting before anything is wiped, reset or overwritten."
+                    : "You have an external drive or backup. That may be the safest surviving copy of the original wallet environment."
+            });
+        } else if (key === "records") {
+            cards.push({
+                title: "Records that can pin down the trail",
+                detail: `You identified: ${answers.records || "old records"}. Dates, amounts, exchange names, transaction IDs and addresses from those records can turn a vague memory into a timeline.`
+            });
+        } else if (key === "exchange_named") {
+            cards.push({
+                title: `${answers.exchange || "Your exchange"} is a concrete starting point`,
+                detail: `You named the service${answers.year ? ` and placed the purchase in ${answers.year}` : ""}. The next questions are whether it still operates, what its official account-recovery route is, and whether a closure or claims process applies.`
+            });
+        } else if (key === "account") {
+            cards.push({
+                title: "The original account may still be the shortest route",
+                detail: `You answered “${answers.account || "not sure"}” about account access. Before assuming the Bitcoin moved elsewhere, the service's own sign-in and recovery process is worth testing carefully.`
+            });
+        } else if (key === "bitcoin_address") {
+            cards.push({
+                title: "A Bitcoin address can be checked",
+                detail: "An address gives the investigation something independently verifiable on the blockchain, while still keeping ownership and access as separate questions."
+            });
+        }
+    });
+    return cards;
+}
+
+function buildInvestigationOfferHTML(assessment) {
+    const cards = investigationLeadCards(assessment);
+    const leadTitles = cards.map(c => c.title).join(" · ");
+    const missing = (assessment.missing_information || []).map(key => ({
+        device: "original device or backup", records: "old records", account: "account access"
+    }[key] || key));
+    const cardHTML = cards.map(card => `
+        <div class="lead-card">
+            <div class="classification">Possible lead</div>
+            <h4>${esc(card.title)}</h4>
+            <p>${esc(card.detail)}</p>
+        </div>`).join("");
+    return `<div class="offer-panel">
+        <span class="badge">CREDIBLE LEAD${cards.length === 1 ? "" : "S"} IDENTIFIED</span>
+        <h2>You have ${cards.length} real place${cards.length === 1 ? "" : "s"} to look next.</h2>
+        <p>The free assessment names the clues. The full report turns <b>your</b> clues into a case file: what each lead means, what it does not prove, what to check first, and exactly how to work through it without damaging evidence.</p>
+        <div class="lead-grid">${cardHTML}</div>
+
+        <h3>Why this is more than the summary above</h3>
+        <div class="compare-grid">
+            <div class="compare-card">
+                <h4>Your free assessment</h4>
+                <ul>
+                    <li>Your answers, organized</li>
+                    <li>The types of leads identified</li>
+                    <li>Your first three priorities</li>
+                </ul>
+            </div>
+            <div class="compare-card full">
+                <h4>Your full Investigation Report</h4>
+                <ul>
+                    <li>Every lead classified and explained</li>
+                    <li>Detailed checklists for each route</li>
+                    <li>Unknowns and evidence gaps laid out</li>
+                    <li>A downloadable report saved to your case</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Inside your report</h3>
+        <div class="preview-list">
+            <div class="preview-row"><div class="lock">▣</div><div><h4>1. Your case file and evidence map</h4><p>Built from your ${Object.keys(answers).length} answers — facts, possible leads and unknowns kept separate.</p></div></div>
+            <div class="preview-row"><div class="lock">🔒</div><div><h4>2. Lead-by-lead assessment</h4><p>${esc(leadTitles || "Your identified leads")} — what each one could establish, and what it cannot prove by itself.</p></div></div>
+            <div class="preview-row"><div class="lock">🔒</div><div><h4>3. Prioritized action plan and checklists</h4><p>The order matters: preserve evidence first, then gather records, then test account access. Includes the exact email search terms and device-preservation steps.</p></div></div>
+            <div class="preview-row"><div class="lock">🔒</div><div><h4>4. Unknowns, limits and safety rules</h4><p>${missing.length ? `Still to resolve: ${esc(missing.join(", "))}. ` : ""}What remains unknown, what would change the assessment, and the mistakes that can permanently destroy a lead.</p></div></div>
+        </div>
+
+        <div class="price-box">
+            <div>
+                <div class="price">$9.99 <span style="font-size:16px;color:#9aa7bd">USD</span></div>
+                <p>One-time payment · No subscription · Available when payment is confirmed</p>
+            </div>
+            <button class="button" id="reportBtn" onclick="buyProduct('investigation_report')">UNLOCK MY FULL REPORT →</button>
+        </div>
+        <p style="font-size:13px;margin-top:14px">We only offer the paid report when a credible lead is found. It cannot prove ownership or guarantee recovery — its job is to give you the clearest evidence-based route from where you are now.</p>
+        <div id="reportFile"></div>
+
+        <div class="addon-panel">
+            <h3>Want someone to walk you through the steps?</h3>
+            <p><b>AI Guided Next Steps ($6.99)</b> uses the proposed steps from your investigation and talks you through them one at a time, in plain English.</p>
+            <button class="button secondary" id="walkBtn" onclick="buyProduct('ai_walkthrough')">ADD AI GUIDED NEXT STEPS — $6.99</button>
+        </div>
+
+        <details class="sample-details">
+            <summary>See a fictional sample report first</summary>
+            ${sampleInvestigationHTML()}
+        </details>
+    </div>`;
+}
+
 /* ---- Purchases, demo checkout, report download, walkthrough ---- */
 let pendingDemo = null;
 
@@ -1167,22 +1361,17 @@ async function runBackendAssessment() {
         const outcome = await api("/api/run", { investigation_id: session.investigation_id });
         const a = outcome.assessment;
         if (!a) return;
-        let html = '<div class="report-section"><h3>Your preliminary assessment (saved to your investigation)</h3>';
+        let html = "";
         if (a.credible_lead) {
-            html += `<p>We found credible lead(s): <b>${esc(a.leads.join(", "))}</b>.</p>
-            <p>Your full <b>Investigation Report is $9.99 USD</b>, and you can add <b>AI Guided Next Steps for $6.99 USD</b> — an AI chat bot that walks you through each proposed next step.</p>
-            ${sampleInvestigationHTML()}
-            <button class="button" id="reportBtn" onclick="buyProduct('investigation_report')">GET MY INVESTIGATION REPORT — $9.99 →</button>
-            <br>
-            <button class="button secondary" id="walkBtn" onclick="buyProduct('ai_walkthrough')">AI GUIDED NEXT STEPS — $6.99</button>
-            <div id="reportFile"></div>`;
+            html += buildInvestigationOfferHTML(a);
         } else {
-            html += "<p>Based on your answers so far, we haven't found a credible actionable lead yet — your free assessment stays open, and more answers may change that.</p>";
+            html += '<div class="report-section"><h3>Your preliminary assessment (saved to your investigation)</h3>';
+            html += "<p>Based on your answers so far, we haven't found a credible actionable lead yet — your free assessment stays open, and more answers may change that. We won't ask you to pay for a full report until there is a credible lead to investigate.</p>";
+            if (a.missing_information && a.missing_information.length) {
+                html += `<p>Still unknown: ${esc(a.missing_information.join(", "))}.</p>`;
+            }
+            html += "</div>";
         }
-        if (a.missing_information && a.missing_information.length) {
-            html += `<p>Still unknown: ${esc(a.missing_information.join(", "))}.</p>`;
-        }
-        html += "</div>";
         document.getElementById("reportContent").innerHTML += html;
         refreshPurchases();
     } catch (e) { /* local report still stands if the server is unreachable */ }
@@ -1298,11 +1487,6 @@ function buildReport() {
 
 }
 
-function showUpgrade() {
-
-    show("upgrade");
-
-}
 
 </script>
 
