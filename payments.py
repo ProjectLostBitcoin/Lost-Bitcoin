@@ -32,6 +32,11 @@ import investigation_controller as controller
 
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+# Stripe Tax (GST) — decided by Mark 2026-11-14. Automatic tax is only
+# requested from Stripe when this flag is on, because Stripe rejects
+# sessions with automatic_tax until Stripe Tax is activated in the
+# dashboard. Off = checkout behaves exactly as before.
+STRIPE_TAX_ENABLED = os.environ.get("STRIPE_TAX_ENABLED", "") == "1"
 
 # Optional Stripe catalogue products (created per environment — sandbox
 # and live have different IDs). When set, checkout attaches the amount
@@ -124,6 +129,13 @@ def build_session_form(investigation_id, customer_id, product, amount,
         form["line_items[0][price_data][product]"] = STRIPE_PRODUCT_IDS[product]
     if customer_email:
         form["customer_email"] = customer_email
+    if STRIPE_TAX_ENABLED:
+      # Stripe Tax computes GST by the customer's location; Checkout
+      # needs a billing address to place the customer. Prices stay as
+      # listed and tax is added on top (dashboard default tax code and
+      # exclusive tax behavior apply to the inline product).
+      form["automatic_tax[enabled]"] = "true"
+      form["billing_address_collection"] = "required"
     return form
 
 
