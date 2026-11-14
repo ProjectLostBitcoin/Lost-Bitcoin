@@ -43,6 +43,7 @@ import investigation_controller as controller
 import report_generator
 import payments
 import walkthrough
+import guides
 import exchange_guide
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -249,16 +250,32 @@ class Handler(BaseHTTPRequestHandler):
                 self._security_headers()
                 self.end_headers()
                 self.wfile.write(body)
+            elif parsed.path in ("/guides", "/guides/"):
+                self._send_text(200, guides.render_index(),
+                                "text/html; charset=utf-8")
+            elif parsed.path.startswith("/guides/"):
+                page = guides.render_post(parsed.path[len("/guides/"):].strip("/"))
+                if page is None:
+                    self._send_text(404,
+                        "<h1>Guide not found</h1><p><a href=\"/guides\">All guides</a></p>",
+                        "text/html; charset=utf-8")
+                else:
+                    self._send_text(200, page, "text/html; charset=utf-8")
             elif parsed.path == "/robots.txt":
                 self._send_text(200,
                     "User-agent: *\nAllow: /\n"
                     "Sitemap: https://lostbitcoin.org/sitemap.xml\n",
                     "text/plain; charset=utf-8")
             elif parsed.path == "/sitemap.xml":
+                guide_urls = "".join(
+                    f"<url><loc>https://lostbitcoin.org/guides/{g['slug']}</loc></url>"
+                    for g in guides.GUIDES)
                 self._send_text(200,
                     '<?xml version="1.0" encoding="UTF-8"?>\n'
                     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
                     "<url><loc>https://lostbitcoin.org/</loc></url>"
+                    "<url><loc>https://lostbitcoin.org/guides</loc></url>"
+                    + guide_urls +
                     "<url><loc>https://lostbitcoin.org/privacy</loc></url>"
                     "<url><loc>https://lostbitcoin.org/terms</loc></url>"
                     "</urlset>",
