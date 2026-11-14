@@ -681,9 +681,9 @@ footer {
 <!-- START: name + email -->
 
 <section class="card hidden" id="start">
-    <div class="eyebrow">Start your investigation</div>
+    <div class="eyebrow" id="startEyebrow">Start your investigation</div>
     <h1>A couple of details first.</h1>
-    <p>So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.</p>
+    <p id="startBlurb">So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.</p>
     <input id="startName" type="text" placeholder="Your name">
     <input id="startEmail" type="email" placeholder="Your email address">
     <button class="button" onclick="beginInvestigation()">CONTINUE →</button>
@@ -733,11 +733,11 @@ footer {
 
 <section class="card hidden" id="report">
 
-    <div class="eyebrow">Free assessment complete</div>
+    <div class="eyebrow" id="reportEyebrow">Free assessment complete</div>
 
-    <h1>Your investigation results</h1>
+    <h1 id="reportTitle">Your investigation results</h1>
 
-    <p>We've organized what you've told us and identified your best starting points. If a credible lead is present, your full report offer appears below with the leads it is based on.</p>
+    <p id="reportIntro">We've organized what you've told us and identified your best starting points. If a credible lead is present, your full report offer appears below with the leads it is based on.</p>
 
     <div id="reportContent"></div>
 
@@ -1129,13 +1129,24 @@ async function api(path, body) {
     return data;
 }
 
-function startFlow(kind) { pendingStart = kind; show("start"); }
+function startFlow(kind) {
+    pendingStart = kind;
+    const eb = document.getElementById("startEyebrow"), bl = document.getElementById("startBlurb");
+    if (kind === "bitcoin_address") {
+        eb.textContent = "Wallet Report";
+        bl.textContent = "So we can save your report and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.";
+    } else {
+        eb.textContent = "Start your investigation";
+        bl.textContent = "So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.";
+    }
+    show("start");
+}
 
 async function beginInvestigation() {
     const name = document.getElementById("startName").value.trim();
     const email = document.getElementById("startEmail").value.trim();
     const msg = document.getElementById("startMsg");
-    if (!name || !email) { msg.textContent = "Please add your name and email so we can save your investigation."; return; }
+    if (!name || !email) { msg.textContent = "Please add your name and email so we can save your work."; return; }
     try {
         const data = await api("/api/start", { name, email, starting_point: pendingStart });
         session = data;
@@ -1187,8 +1198,9 @@ async function submitAddress() {
         await api("/api/address", { investigation_id: session.investigation_id, address, label: label.value.trim() });
         myAddresses.push(address);
         input.value = ""; label.value = "";
-        msg.textContent = "Address saved. Add another, or see your results.";
+        msg.textContent = "Checking the blockchain…";
         renderAddrList();
+        await finishAddresses();
     } catch (e) { msg.textContent = e.message; }
 }
 
@@ -1205,7 +1217,22 @@ async function finishAddresses() {
     } catch (e) { alert(e.message); }
 }
 
+function setReportHeader(kind) {
+    const e = document.getElementById("reportEyebrow"), t = document.getElementById("reportTitle"), i = document.getElementById("reportIntro");
+    if (!e || !t || !i) return;
+    if (kind === "wallet") {
+        e.textContent = "Wallet Report";
+        t.textContent = "Your address results";
+        i.textContent = "Here's what the public blockchain shows for your address. Your full Wallet Report adds the complete history, what the pattern suggests, and the recommended next step.";
+    } else {
+        e.textContent = "Free assessment complete";
+        t.textContent = "Your investigation results";
+        i.textContent = "We've organized what you've told us and identified your best starting points. If a credible lead is present, your full report offer appears below with the leads it is based on.";
+    }
+}
+
 function buildAddressReport(outcome) {
+    setReportHeader("wallet");
     show("report");
     let html = '<div class="report-section"><h3>Blockchain findings (confirmed)</h3>';
     (outcome.address_results || []).forEach(r => {
@@ -1217,7 +1244,7 @@ function buildAddressReport(outcome) {
     });
     const n = myAddresses.length || (outcome.address_results || []).length;
     const price = n ? (4.99 + 1.99 * (n - 1)).toFixed(2) : "4.99";
-    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b>.</p>${sampleWalletHTML()}<button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div></div>`;
+    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b> — complete on-chain history, what the pattern suggests, and the recommended next step for each address.</p><button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div><details class="sample-details"><summary>See what the full report adds (sample)</summary>${sampleWalletHTML()}</details><p style="margin-top:16px"><button class="button secondary" onclick="show('address')">ADD ANOTHER ADDRESS (+$1.99)</button></p></div>`;
     document.getElementById("reportContent").innerHTML = html;
     refreshPurchases();
 }
@@ -1453,6 +1480,7 @@ async function runBackendAssessment() {
 
 function buildReport() {
 
+    setReportHeader("investigation");
     show("report");
 
     document.getElementById("bar").style.width="100%";
@@ -1561,6 +1589,37 @@ function buildReport() {
 
 }
 
+/* ---- Return from Stripe checkout (success_url lands on /?paid=1) ----
+   Rebuild the customer's results view, wait briefly for the verified
+   webhook to record the purchase, then deliver the report. Purchase
+   truth still comes only from the webhook — this only polls for it. */
+(async function handlePaidReturn() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("paid") !== "1" || !session) return;
+    history.replaceState(null, "", location.pathname);
+    const product = session.starting_point === "bitcoin_address" ? "wallet_report" : "investigation_report";
+    try {
+        if (session.starting_point === "bitcoin_address") { await finishAddresses(); }
+        else { buildReport(); }
+    } catch (e) { /* fall through to the purchase poll */ }
+    for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+            const data = await api("/api/purchases?investigation_id=" + session.investigation_id);
+            const owned = (data.purchases || []).some(x => x.status === "completed" && x.product === product);
+            if (owned) {
+                const c = document.getElementById("reportContent");
+                if (c && !document.getElementById("paidNotice")) {
+                    c.insertAdjacentHTML("afterbegin", '<div class="notice" id="paidNotice"><b>Payment received — thank you.</b> Your report is downloading now.</div>');
+                }
+                refreshPurchases();
+                await downloadReport();
+                return;
+            }
+        } catch (e) { /* webhook may not have landed yet — keep polling */ }
+        await new Promise(r => setTimeout(r, 2000));
+    }
+    refreshPurchases();
+})();
 
 </script>
 
