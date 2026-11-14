@@ -213,6 +213,9 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def _security_headers(self):
+        # Pages and API answers must never be served from a stale browser
+        # cache — after a deploy, every visitor gets the current version.
+        self.send_header("Cache-Control", "no-cache, must-revalidate")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
