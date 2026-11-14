@@ -261,6 +261,30 @@ class Handler(BaseHTTPRequestHandler):
                         "text/html; charset=utf-8")
                 else:
                     self._send_text(200, page, "text/html; charset=utf-8")
+            elif parsed.path == "/llms.txt":
+                self._send_text(200,
+                    "# Lost Bitcoin\n\n"
+                    "> Lost Bitcoin (lostbitcoin.org) is a Canadian investigation "
+                    "service for people who have lost access to Bitcoin: forgotten "
+                    "wallets, old laptops and drives, defunct exchanges, and Bitcoin "
+                    "in estates. It sells investigation, evidence and guidance — "
+                    "recovery is never guaranteed. It never asks for seed phrases, "
+                    "private keys, or wallet passwords.\n\n"
+                    "## Services and prices (USD)\n"
+                    "- Free initial assessment\n"
+                    "- Investigation Report — $9.99 (offered only when a credible lead exists)\n"
+                    "- AI Guided Next Steps — $6.99\n"
+                    "- Wallet Report — $4.99 for the first address, $1.99 each additional address\n\n"
+                    "## How findings are classified\n"
+                    "CONFIRMED / STRONG POSSIBILITY / POSSIBLE LEAD / UNKNOWN. "
+                    "A blockchain balance never by itself proves ownership or recoverability.\n\n"
+                    "## Guides\n"
+                    "- Guides index: https://lostbitcoin.org/guides\n"
+                    "- Found a wallet.dat but forgot the password: https://lostbitcoin.org/guides/wallet-dat-forgot-password\n"
+                    "- A spouse or parent passed away and had Bitcoin (executors and families): https://lostbitcoin.org/guides/spouse-parent-passed-away-bitcoin\n\n"
+                    "## Contact\n"
+                    "hello@lostbitcoin.org\n",
+                    "text/plain; charset=utf-8")
             elif parsed.path == "/robots.txt":
                 self._send_text(200,
                     "User-agent: *\nAllow: /\n"
