@@ -31,6 +31,8 @@ import hashlib
 import hmac
 import json
 import os
+import sqlite3
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -50,6 +52,79 @@ BASE_DIR = Path(__file__).resolve().parent
 REPORTS_DIR = Path(os.environ.get("LOST_BITCOIN_REPORTS_DIR")
                    or BASE_DIR / "generated_reports")
 SECRET = os.environ.get("LOST_BITCOIN_SECRET", "DEV-ONLY-CHANGE-ME").encode()
+
+# -- Anonymous visit counter -------------------------------------------------
+# Counts page views per day/path/referrer-host/utm_source in a small
+# SQLite file beside the main database. No IP addresses, no cookies,
+# no user-agent strings are stored (the UA is only inspected in memory
+# to skip obvious bots). Readable only via /api/stats with the app
+# secret in the X-Stats-Key header. Counting must never break a page.
+_STATS_LOCK = threading.Lock()
+_BOT_MARKERS = ("bot", "crawler", "spider", "curl", "wget", "headless",
+                "python-requests", "urllib", "monitor", "uptime")
+
+
+def _stats_path():
+    db = os.environ.get("LOST_BITCOIN_DB")
+    if db:
+        return str(Path(db).with_name("stats.db"))
+    return str(BASE_DIR / "stats.db")
+
+
+def _record_view(path, referrer_host, utm_source):
+    try:
+        day = time.strftime("%Y-%m-%d", time.gmtime())
+        with _STATS_LOCK:
+            conn = sqlite3.connect(_stats_path(), timeout=5)
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS page_views("
+                "day TEXT, path TEXT, referrer TEXT, utm_source TEXT,"
+                " views INTEGER,"
+                " PRIMARY KEY(day, path, referrer, utm_source))")
+            conn.execute(
+                "INSERT INTO page_views VALUES (?,?,?,?,1)"
+                " ON CONFLICT(day, path, referrer, utm_source)"
+                " DO UPDATE SET views = views + 1",
+                (day, path, referrer_host or "", utm_source or ""))
+            conn.commit()
+            conn.close()
+    except Exception:
+        pass
+
+
+def _stats_summary():
+    summary = {"total_views": 0, "today_views": 0, "by_day": [],
+               "top_paths": [], "top_referrers": [], "utm_sources": []}
+    try:
+        conn = sqlite3.connect(f"file:{_stats_path()}?mode=ro", uri=True)
+        rows = conn.execute(
+            "SELECT day, path, referrer, utm_source, views"
+            " FROM page_views").fetchall()
+        conn.close()
+    except Exception:
+        return summary
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    by_day, by_path, by_ref, by_utm = {}, {}, {}, {}
+    for day, path, referrer, utm, views in rows:
+        summary["total_views"] += views
+        if day == today:
+            summary["today_views"] += views
+        by_day[day] = by_day.get(day, 0) + views
+        by_path[path] = by_path.get(path, 0) + views
+        by_ref[referrer or "direct"] = by_ref.get(referrer or "direct", 0) + views
+        if utm:
+            by_utm[utm] = by_utm.get(utm, 0) + views
+    summary["by_day"] = [{"day": d, "views": by_day[d]}
+                         for d in sorted(by_day)[-30:]]
+    summary["top_paths"] = [{"path": p, "views": v} for p, v in
+                            sorted(by_path.items(), key=lambda kv: -kv[1])[:10]]
+    summary["top_referrers"] = [{"referrer": r, "views": v} for r, v in
+                                sorted(by_ref.items(), key=lambda kv: -kv[1])[:10]]
+    summary["utm_sources"] = [{"source": u, "views": v} for u, v in
+                              sorted(by_utm.items(), key=lambda kv: -kv[1])[:10]]
+    return summary
+
+
 TOKEN_TTL_SECONDS = 30 * 24 * 3600
 MAX_BODY_BYTES = 64 * 1024
 
@@ -229,11 +304,21 @@ class Handler(BaseHTTPRequestHandler):
         full = record.get_complete_investigation(investigation_id)
         return full, None
 
+    def _count_view(self, parsed):
+        ua = (self.headers.get("User-Agent") or "").lower()
+        if any(marker in ua for marker in _BOT_MARKERS):
+            return
+        referer = self.headers.get("Referer") or ""
+        host = (urlparse(referer).hostname or "") if referer else ""
+        utm = parse_qs(parsed.query).get("utm_source", [""])[0][:40]
+        _record_view(parsed.path, host, utm)
+
     # -- routing
     def do_GET(self):
         parsed = urlparse(self.path)
         try:
             if parsed.path in ("/privacy", "/privacy.html", "/terms", "/terms.html"):
+                self._count_view(parsed)
                 page = "privacy.html" if "privacy" in parsed.path else "terms.html"
                 body = (BASE_DIR / page).read_bytes()
                 self.send_response(200)
@@ -243,6 +328,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(body)
             elif parsed.path in ("/", "/index.html"):
+                self._count_view(parsed)
                 body = (BASE_DIR / "index.html").read_bytes()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -251,6 +337,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(body)
             elif parsed.path in ("/guides", "/guides/"):
+                self._count_view(parsed)
                 self._send_text(200, guides.render_index(),
                                 "text/html; charset=utf-8")
             elif parsed.path.startswith("/guides/"):
@@ -260,7 +347,14 @@ class Handler(BaseHTTPRequestHandler):
                         "<h1>Guide not found</h1><p><a href=\"/guides\">All guides</a></p>",
                         "text/html; charset=utf-8")
                 else:
+                    self._count_view(parsed)
                     self._send_text(200, page, "text/html; charset=utf-8")
+            elif parsed.path == "/api/stats":
+                key = (self.headers.get("X-Stats-Key") or "").encode()
+                if not hmac.compare_digest(key, SECRET):
+                    self._send_json(403, {"error": "Forbidden."})
+                else:
+                    self._send_json(200, _stats_summary())
             elif parsed.path == "/llms.txt":
                 self._send_text(200,
                     "# Lost Bitcoin\n\n"
