@@ -93,6 +93,7 @@ class TestApi(unittest.TestCase):
             index = r.read().decode()
         self.assertIn("wallet-dat-forgot-password", index)
         self.assertIn("spouse-parent-passed-away-bitcoin", index)
+        self.assertIn("bitcoin-recovery-service-scams", index)
         with u.urlopen(self.base + "/guides/wallet-dat-forgot-password", timeout=10) as r:
             post = r.read().decode()
         self.assertIn("Don't experiment on the only copy", post)
