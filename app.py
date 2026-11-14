@@ -281,7 +281,8 @@ class Handler(BaseHTTPRequestHandler):
                     "## Guides\n"
                     "- Guides index: https://lostbitcoin.org/guides\n"
                     "- Found a wallet.dat but forgot the password: https://lostbitcoin.org/guides/wallet-dat-forgot-password\n"
-                    "- A spouse or parent passed away and had Bitcoin (executors and families): https://lostbitcoin.org/guides/spouse-parent-passed-away-bitcoin\n\n"
+                    "- A spouse or parent passed away and had Bitcoin (executors and families): https://lostbitcoin.org/guides/spouse-parent-passed-away-bitcoin\n"
+                    "- Bitcoin recovery service scams — 9 red flags: https://lostbitcoin.org/guides/bitcoin-recovery-service-scams\n\n"
                     "## Contact\n"
                     "hello@lostbitcoin.org\n",
                     "text/plain; charset=utf-8")

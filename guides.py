@@ -138,6 +138,51 @@ GUIDES = [
              "Preserve it untouched. An investigation can document what exists and what the realistic options are — including, sometimes, that access may not be possible. Honest answers beat false hope."),
         ],
     },
+    {
+        "slug": "bitcoin-recovery-service-scams",
+        "title": "Bitcoin Recovery Service Scams: 9 Red Flags Before You Pay Anyone",
+        "description": "Searching 'bitcoin recovery service scam' before you pay? Good instinct. The 9 red flags every fake recovery service shows — and a checklist you can use on any service, including us.",
+        "dek": "If you're reading this, there's a decent chance you're mid-conversation with someone who says they can get your Bitcoin back. Pause. Pausing is free, and it's the one move the scammers can't counter — everything on this page can be checked in ten minutes, before any money moves.",
+        "body": """
+<h2>Why this scam works so well</h2>
+<p>Losing Bitcoin hurts, and the fake-recovery industry knows it. The FBI has warned about crypto recovery scams that charge upfront fees for recoveries that never happen — and the cruellest version targets people <i>who were already scammed once</i>, promising to recover the stolen funds for one more "fee." Real help exists. It just never looks like this:</p>
+<h2>The 9 red flags</h2>
+<ul>
+<li><b>They contacted you first.</b> A DM, a comment reply, an email out of nowhere. Legitimate services wait to be found; hunters go looking for the already-hurt.</li>
+<li><b>They guarantee recovery.</b> Nobody can. Access depends on what survived — a file, an account, a record. A guarantee is a lie told to close a sale.</li>
+<li><b>They ask for your seed phrase, private keys, or wallet password.</b> This is the whole scam in one step. With those, they don't recover your Bitcoin — they take it. No exceptions, no "we need it to verify."</li>
+<li><b>There's an upfront "release," "activation," or "tax" fee</b> before funds you've never seen can be "unlocked." Classic advance-fee fraud. Real recovered money never needs a toll booth.</li>
+<li><b>They want remote access to your computer</b> (AnyDesk, TeamViewer, "let me just do it for you"). That's not support; that's hands in your pockets.</li>
+<li><b>They show you a "recovered balance."</b> A screenshot, a dashboard login they gave you, an address with money in it. Balances are <i>public</i> — anyone can show you an address. Showing isn't recovering.</li>
+<li><b>Pressure and secrecy.</b> "Act today," "don't tell your bank," "your family won't understand." Urgency is the tool; isolation is the setup.</li>
+<li><b>Payment only in crypto, gift cards, or wire to a person</b> — no real checkout, no receipt, no business you can look up. Money sent that way is gone by design.</li>
+<li><b>They impersonate.</b> Fake exchange support, fake wallet companies, lookalike websites, "official" emails. Type addresses yourself; never arrive from a link someone sent you.</li>
+</ul>
+<h2>The verify-us checklist</h2>
+<p>Don't trust a service's claims — run its tests. Here's ours, and you should apply it to anyone, <b>including us</b>:</p>
+<ul>
+<li><b>Type the address yourself</b> (lostbitcoin.org) instead of clicking links.</li>
+<li><b>Prices in public, before signup:</b> free assessment; Investigation Report $9.99, only offered when a credible lead exists; Wallet Report $4.99.</li>
+<li><b>Payment through a real card checkout</b> (Stripe) with receipts — never crypto-first, never person-to-person.</li>
+<li><b>A written report</b> that separates what's <i>confirmed</i> from what's a <i>possible lead</i> from what's honestly <i>unknown</i>.</li>
+<li><b>We refuse your seed phrase even if you offer it.</b> Our system actively rejects them. That's what a real service's "no" sounds like.</li>
+</ul>
+<h2>If you've already paid — or shared</h2>
+<ul>
+<li><b>Stop contact, and don't pay the second fee.</b> The "we found it, just one release payment" message is the second scam arriving.</li>
+<li><b>If you shared a seed phrase:</b> treat that wallet as public. From a clean device, move anything remaining to a brand-new wallet.</li>
+<li><b>Save everything</b> — chats, addresses, receipts — and report it: in Canada, the Canadian Anti-Fraud Centre; in the US, the FBI's IC3 and the FTC. Reporting rarely returns money, but it's how these operations get shut down.</li>
+</ul>
+""",
+        "faq": [
+            ("Is any Bitcoin recovery legitimate?",
+             "Investigation is; magic isn't. A legitimate service documents what happened, checks evidence against the public blockchain, and guides your next steps. Whether access is possible depends on what survived — and honest services say so, in writing, before you pay."),
+            ("A service says my Bitcoin is \"located\" and I owe a fee to release it. Real?",
+             "No. Locating a public balance is free and instant — it proves nothing about access. The fee is the product they're selling."),
+            ("Can a real service ever need my password?",
+             "Your exchange account recovery goes through the exchange itself. Your wallet password is yours alone. Anyone asking for either is red flag #3 — walk away."),
+        ],
+    },
 ]
 
 
