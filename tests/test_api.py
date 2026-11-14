@@ -100,6 +100,10 @@ class TestApi(unittest.TestCase):
         self.assertIn("never ask for seed phrases", post)
         with u.urlopen(self.base + "/sitemap.xml", timeout=10) as r:
             self.assertIn("/guides/wallet-dat-forgot-password", r.read().decode())
+        with u.urlopen(self.base + "/llms.txt", timeout=10) as r:
+            llms = r.read().decode()
+        self.assertIn("never guaranteed", llms)
+        self.assertIn("$9.99", llms)
         try:
             u.urlopen(self.base + "/guides/no-such-guide", timeout=10)
             self.fail("unknown guide should 404")
