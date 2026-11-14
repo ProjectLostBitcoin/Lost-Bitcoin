@@ -111,6 +111,35 @@ class TestApi(unittest.TestCase):
         except urllib.error.HTTPError as e:
             self.assertEqual(e.code, 404)
 
+    def test_stats_counter(self):
+        import urllib.request as u
+        # Stats are secret-gated.
+        status, _ = call(self.base, "GET", "/api/stats")
+        self.assertEqual(status, 403)
+        def read_stats():
+            req = u.Request(self.base + "/api/stats")
+            req.add_header("X-Stats-Key", "test-secret")
+            with u.urlopen(req, timeout=10) as r:
+                return json.loads(r.read().decode())
+        # A normal browser view with a referrer gets counted.
+        req = u.Request(self.base + "/?utm_source=youtube&utm_medium=shorts")
+        req.add_header("User-Agent", "Mozilla/5.0 (Macintosh) Safari/605.1")
+        req.add_header("Referer", "https://www.youtube.com/")
+        with u.urlopen(req, timeout=10) as r:
+            self.assertEqual(r.status, 200)
+        stats = read_stats()
+        refs = [x["referrer"] for x in stats["top_referrers"]]
+        self.assertIn("www.youtube.com", refs)
+        srcs = [x["source"] for x in stats["utm_sources"]]
+        self.assertIn("youtube", srcs)
+        # ...while an obvious bot does not move the total.
+        before = stats["total_views"]
+        req = u.Request(self.base + "/")
+        req.add_header("User-Agent", "curl/8.0")
+        with u.urlopen(req, timeout=10) as r:
+            self.assertEqual(r.status, 200)
+        self.assertEqual(read_stats()["total_views"], before)
+
     def test_health_and_pricing(self):
         status, data = call(self.base, "GET", "/api/health")
         self.assertEqual((status, data["status"]), (200, "ok"))
