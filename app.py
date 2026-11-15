@@ -481,7 +481,7 @@ class Handler(BaseHTTPRequestHandler):
         except ValueError as error:
             if "already has an account" not in str(error):
                 raise
-            resumed = record.resume_customer_investigation(email)
+            resumed = record.resume_customer_investigation(email, starting_point)
             if resumed is None:
                 raise
             created = {
@@ -497,7 +497,8 @@ class Handler(BaseHTTPRequestHandler):
         if self._throttled():
             return self._send_json(429, {"error": "Too many attempts. Please try again later."})
         email = str(data.get("email", "")).strip()
-        resumed = record.resume_customer_investigation(email) if email else None
+        starting_point = data.get("starting_point") or None
+        resumed = record.resume_customer_investigation(email, starting_point) if email else None
         if resumed is None:
             return self._send_json(404, {"error": "No active investigation found for that email."})
         resumed["token"] = issue_token(resumed["customer_id"])

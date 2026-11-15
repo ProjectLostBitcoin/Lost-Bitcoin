@@ -254,6 +254,12 @@ def create_customer(name, email, starting_point="lost_bitcoin"):
         timestamp = get_timestamp()
 
         # Check whether this customer already exists.
+        # One active investigation per starting point per email: an email
+        # may hold both a lost-Bitcoin investigation AND a Wallet Report
+        # (bitcoin_address) investigation at the same time. Starting the
+        # other flow must never silently swap the customer into the old
+        # record of the first flow (that hijack is what stranded a paid
+        # Wallet Report on an empty investigation page on 2026-11-14).
         customer = None
 
         if email:
@@ -264,21 +270,33 @@ def create_customer(name, email, starting_point="lost_bitcoin"):
             customer = cursor.fetchone()
 
         if customer:
-            raise ValueError(
-                "This email already has an account. "
-                "Please resume the existing investigation."
-            )
+            customer_id = customer[0]
+            cursor.execute("""
+                SELECT investigation_id FROM investigations
+                WHERE customer_id = ?
+                  AND starting_point = ?
+                  AND status = 'active'
+                ORDER BY updated_at DESC, created_at DESC
+                LIMIT 1
+            """, (customer_id, starting_point))
+            if cursor.fetchone():
+                raise ValueError(
+                    "This email already has an account. "
+                    "Please resume the existing investigation."
+                )
+            # Same customer, different starting point: start a fresh
+            # investigation for them instead of reusing the old one.
+        else:
+            customer_id = str(uuid.uuid4())
 
-        customer_id = str(uuid.uuid4())
-
-        cursor.execute("""
-            INSERT INTO customers (
-                customer_id, name, email, created_at, updated_at
-            )
-            VALUES (?, ?, ?, ?, ?)
-        """, (
-            customer_id, name, email, timestamp, timestamp
-        ))
+            cursor.execute("""
+                INSERT INTO customers (
+                    customer_id, name, email, created_at, updated_at
+                )
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                customer_id, name, email, timestamp, timestamp
+            ))
 
         # Start a new investigation.
         investigation_id = str(uuid.uuid4())
@@ -325,10 +343,14 @@ def create_customer(name, email, starting_point="lost_bitcoin"):
         connection.close()
 
 
-def resume_customer_investigation(email):
+def resume_customer_investigation(email, starting_point=None):
     """
     Find a customer's most recent active investigation.
     Does not create a new customer or investigation.
+
+    When starting_point is given, only an investigation of that type is
+    returned, so resuming the Wallet Report flow never lands the customer
+    in their lost-Bitcoin investigation (or vice versa).
     """
 
     if not email:
@@ -336,11 +358,14 @@ def resume_customer_investigation(email):
 
     email = email.strip().lower()
 
+    if starting_point is not None and starting_point not in ("lost_bitcoin", "bitcoin_address"):
+        raise ValueError("Invalid investigation starting point.")
+
     connection = connect_database()
     cursor = connection.cursor()
 
     try:
-        cursor.execute("""
+        query = """
             SELECT
                 customers.customer_id,
                 customers.name,
@@ -352,9 +377,16 @@ def resume_customer_investigation(email):
                 ON customers.customer_id = investigations.customer_id
             WHERE customers.email = ?
               AND investigations.status = 'active'
+        """
+        params = [email]
+        if starting_point is not None:
+            query += " AND investigations.starting_point = ?"
+            params.append(starting_point)
+        query += """
             ORDER BY investigations.updated_at DESC, investigations.created_at DESC
             LIMIT 1
-        """, (email,))
+        """
+        cursor.execute(query, params)
 
         row = cursor.fetchone()
 
