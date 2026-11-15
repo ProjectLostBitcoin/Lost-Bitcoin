@@ -130,12 +130,12 @@ def build_session_form(investigation_id, customer_id, product, amount,
     if customer_email:
         form["customer_email"] = customer_email
     if STRIPE_TAX_ENABLED:
-      # Stripe Tax computes GST by the customer's location; Checkout
-      # needs a billing address to place the customer. Prices stay as
-      # listed and tax is added on top (dashboard default tax code and
-      # exclusive tax behavior apply to the inline product).
-      form["automatic_tax[enabled]"] = "true"
-      form["billing_address_collection"] = "required"
+        # Stripe Tax computes GST by the customer's location; Checkout
+        # needs a billing address to place the customer. Prices stay as
+        # listed and tax is added on top (dashboard default tax code and
+        # exclusive tax behavior apply to the inline product).
+        form["automatic_tax[enabled]"] = "true"
+        form["billing_address_collection"] = "required"
     return form
 
 
@@ -205,15 +205,51 @@ def verify_stripe_signature(raw_body, signature_header, secret=None, tolerance=3
         return False
 
 
+def _fetch_checkout_session(session_id):
+    """Fetch the full Checkout Session from Stripe's API, server-side
+    with our secret key. Used when a webhook arrives in Stripe's short
+    'thin' payload style, which carries only the session's ID.
+    A failed fetch raises, so the webhook answers 500 and Stripe
+    retries later instead of the payment being silently dropped."""
+    request = urllib.request.Request(
+        "https://api.stripe.com/v1/checkout/sessions/" + urllib.parse.quote(session_id),
+        headers={"Authorization": f"Bearer {STRIPE_SECRET_KEY}"},
+    )
+    with urllib.request.urlopen(request, timeout=20) as response:
+        return json.loads(response.read().decode())
+
+
+def _session_from_event(event):
+    """Return the event's full Checkout Session object. Snapshot
+    payloads already carry it; thin payloads carry only an ID (either
+    as a bare object or as data.related_object), so fetch the rest
+    from Stripe. Without a key or an ID there is nothing to fetch —
+    the partial object is returned and the caller treats the event
+    as not recordable."""
+    data = event.get("data", {})
+    session = data.get("object") or {}
+    if session.get("payment_status") is not None and "metadata" in session:
+        return session
+    session_id = session.get("id") or (data.get("related_object") or {}).get("id")
+    if not session_id or not stripe_configured():
+        return session
+    return _fetch_checkout_session(session_id)
+
+
 def handle_stripe_event(event):
     """Record a purchase for a verified checkout.session.completed event.
     Duplicate deliveries are safely rejected by the record module."""
     if event.get("type") != "checkout.session.completed":
         return None
-    session = event.get("data", {}).get("object", {})
+    session = _session_from_event(event)
     if session.get("payment_status") != "paid":
         return None
-    meta = session.get("metadata", {})
+    meta = session.get("metadata") or {}
+    if not meta.get("customer_id") or not meta.get("product"):
+        # A paid session without our metadata is not one of our sales
+        # (e.g. a session created by another tool on the same account).
+        # Acknowledge it instead of erroring, so Stripe stops retrying.
+        return None
     return record.save_purchase(
         meta["customer_id"], meta["product"],
         int(session["amount_total"]),
