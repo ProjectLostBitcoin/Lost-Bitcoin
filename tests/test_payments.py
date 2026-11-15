@@ -59,6 +59,51 @@ class TestPayments(unittest.TestCase):
         self.assertNotEqual(k1, payments.idempotency_key("inv1", "ai_walkthrough", 699))
         self.assertNotEqual(k1, payments.idempotency_key("inv2", "investigation_report", 999))
 
+    def test_session_from_snapshot_event_needs_no_fetch(self):
+        def boom(_sid):
+            raise AssertionError("fetch must not run for a snapshot payload")
+        saved_fetch, saved_key = payments._fetch_checkout_session, payments.STRIPE_SECRET_KEY
+        try:
+            payments._fetch_checkout_session = boom
+            payments.STRIPE_SECRET_KEY = "sk_test_dummy"
+            event = {"type": "checkout.session.completed",
+                     "data": {"object": {"id": "cs_1", "payment_status": "paid",
+                                         "metadata": {"product": "wallet_report"}}}}
+            self.assertEqual(payments._session_from_event(event)["id"], "cs_1")
+        finally:
+            payments._fetch_checkout_session, payments.STRIPE_SECRET_KEY = saved_fetch, saved_key
+
+    def test_session_from_thin_event_fetches_full_session(self):
+        full = {"id": "cs_thin1", "payment_status": "paid",
+                "metadata": {"product": "wallet_report"}}
+        seen = []
+        saved_fetch, saved_key = payments._fetch_checkout_session, payments.STRIPE_SECRET_KEY
+        try:
+            payments._fetch_checkout_session = lambda sid: (seen.append(sid), full)[1]
+            payments.STRIPE_SECRET_KEY = "sk_test_dummy"
+            # v2 thin shape: only a related_object reference
+            event = {"type": "checkout.session.completed",
+                     "data": {"related_object": {"id": "cs_thin1",
+                                                  "type": "checkout.session"}}}
+            self.assertEqual(payments._session_from_event(event), full)
+            # v1 thin shape: a bare object carrying only its id
+            event = {"type": "checkout.session.completed",
+                     "data": {"object": {"id": "cs_thin1", "object": "checkout.session"}}}
+            self.assertEqual(payments._session_from_event(event), full)
+            self.assertEqual(seen, ["cs_thin1", "cs_thin1"])
+        finally:
+            payments._fetch_checkout_session, payments.STRIPE_SECRET_KEY = saved_fetch, saved_key
+
+    def test_session_from_thin_event_without_key_stays_partial(self):
+        saved_key = payments.STRIPE_SECRET_KEY
+        try:
+            payments.STRIPE_SECRET_KEY = ""
+            event = {"type": "checkout.session.completed",
+                     "data": {"related_object": {"id": "cs_thin1"}}}
+            self.assertNotIn("payment_status", payments._session_from_event(event))
+        finally:
+            payments.STRIPE_SECRET_KEY = saved_key
+
     def test_demo_token_roundtrip_and_tamper(self):
         token = payments._demo_token("inv1", "ai_walkthrough", 699)
         data = payments.verify_demo_token(token)

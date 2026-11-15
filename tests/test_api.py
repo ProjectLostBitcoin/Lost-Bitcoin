@@ -178,6 +178,20 @@ class TestApi(unittest.TestCase):
         self.assertTrue(second["resumed"])
         self.assertEqual(first["customer_id"], second["customer_id"])
 
+    def test_same_email_two_flows_get_separate_investigations(self):
+        # Regression: 2026-11-14, starting the Wallet Report flow with an
+        # email that already had a lost-Bitcoin investigation silently
+        # resumed the old record and stranded a paid Wallet Report.
+        lost = self.start_customer("both@example.com", "lost_bitcoin")
+        wallet = self.start_customer("both@example.com", "bitcoin_address")
+        self.assertFalse(wallet["resumed"])
+        self.assertEqual(wallet["customer_id"], lost["customer_id"])
+        self.assertNotEqual(wallet["investigation_id"], lost["investigation_id"])
+        self.assertEqual(wallet["starting_point"], "bitcoin_address")
+        again = self.start_customer("both@example.com", "lost_bitcoin")
+        self.assertTrue(again["resumed"])
+        self.assertEqual(again["investigation_id"], lost["investigation_id"])
+
     def test_resume_endpoint(self):
         self.start_customer("resume@example.com")
         status, data = call(self.base, "POST", "/api/resume", {"email": "resume@example.com"})
@@ -273,6 +287,46 @@ class TestApi(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError) as cm:
             urllib.request.urlopen(req, timeout=10)
         self.assertEqual(cm.exception.code, 400)
+
+    def test_stripe_webhook_thin_payload_records_purchase(self):
+        # Stripe destinations created with the 'thin' payload style send
+        # only the session ID. The webhook must fetch the full session
+        # from Stripe and still record the purchase exactly once.
+        import hashlib, hmac, time as _time
+        import payments as pay_mod
+        saved_secret, saved_key = pay_mod.STRIPE_WEBHOOK_SECRET, pay_mod.STRIPE_SECRET_KEY
+        saved_fetch = pay_mod._fetch_checkout_session
+        s = self.start_customer("thinhook@example.com")
+        full_session = {"id": "cs_live_thin_1", "payment_status": "paid",
+                        "amount_total": 499, "currency": "usd",
+                        "metadata": {"customer_id": s["customer_id"],
+                                     "investigation_id": s["investigation_id"],
+                                     "product": "wallet_report"}}
+        try:
+            pay_mod.STRIPE_WEBHOOK_SECRET = "whsec_test_e2e"
+            pay_mod.STRIPE_SECRET_KEY = "sk_test_dummy"
+            pay_mod._fetch_checkout_session = lambda sid: full_session
+            event = {"id": "evt_thin_1", "type": "checkout.session.completed",
+                     "data": {"related_object": {"id": "cs_live_thin_1",
+                                                  "type": "checkout.session",
+                                                  "url": "/v1/checkout/sessions/cs_live_thin_1"}}}
+            raw = json.dumps(event).encode()
+            ts = str(int(_time.time()))
+            sig = hmac.new(b"whsec_test_e2e", f"{ts}.".encode() + raw, hashlib.sha256).hexdigest()
+            req = urllib.request.Request(self.base + "/api/stripe/webhook", method="POST", data=raw)
+            req.add_header("Stripe-Signature", f"t={ts},v1={sig}")
+            with urllib.request.urlopen(req, timeout=10) as r:
+                self.assertEqual(r.status, 200)
+            status, data = call(self.base, "GET",
+                                f"/api/purchases?investigation_id={s['investigation_id']}", token=s["token"])
+            paid = [x for x in data["purchases"] if x["status"] == "completed"]
+            self.assertEqual(len(paid), 1)
+            self.assertEqual(paid[0]["product"], "wallet_report")
+            self.assertEqual(paid[0]["amount_minor"], 499)
+        finally:
+            pay_mod.STRIPE_WEBHOOK_SECRET = saved_secret
+            pay_mod.STRIPE_SECRET_KEY = saved_key
+            pay_mod._fetch_checkout_session = saved_fetch
 
     def test_bad_email_rejected(self):
         status, _ = call(self.base, "POST", "/api/start",
