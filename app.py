@@ -71,6 +71,35 @@ def _stats_path():
     return str(BASE_DIR / "stats.db")
 
 
+def _diag_path():
+    db = os.environ.get("LOST_BITCOIN_DB")
+    if db:
+        return str(Path(db).with_name("webhook_diag.json"))
+    return str(BASE_DIR / "webhook_diag.json")
+
+
+def _read_webhook_diag():
+    try:
+        return json.loads(Path(_diag_path()).read_text())
+    except Exception:
+        return []
+
+
+def _save_webhook_diag():
+    """Persist the latest webhook diagnostic (see payments.LAST_EVENT_DIAG)
+    so it can be read back via /api/stats. Never breaks the webhook."""
+    try:
+        diag = dict(payments.LAST_EVENT_DIAG)
+        if not diag:
+            return
+        diag["received_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        entries = _read_webhook_diag()
+        entries.append(diag)
+        Path(_diag_path()).write_text(json.dumps(entries[-10:]))
+    except Exception:
+        pass
+
+
 def _record_view(path, referrer_host, utm_source):
     try:
         day = time.strftime("%Y-%m-%d", time.gmtime())
@@ -122,6 +151,18 @@ def _stats_summary():
                                 sorted(by_ref.items(), key=lambda kv: -kv[1])[:10]]
     summary["utm_sources"] = [{"source": u, "views": v} for u, v in
                               sorted(by_utm.items(), key=lambda kv: -kv[1])[:10]]
+    summary["webhook_diag"] = _read_webhook_diag()
+    try:
+        conn = record.connect_database()
+        row = conn.execute(
+            "SELECT COUNT(*),"
+            " COALESCE(SUM(CASE WHEN investigation_id IS NULL"
+            " THEN 1 ELSE 0 END), 0) FROM purchases").fetchone()
+        conn.close()
+        summary["purchases_total"] = row[0]
+        summary["purchases_without_investigation"] = row[1]
+    except Exception:
+        pass
     return summary
 
 
@@ -459,13 +500,19 @@ class Handler(BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length else b""
         if not payments.verify_stripe_signature(raw, self.headers.get("Stripe-Signature", "")):
             return self._send_json(400, {"error": "Invalid webhook signature."})
+        duplicate = False
         try:
             event = json.loads(raw.decode("utf-8"))
             payments.handle_stripe_event(event)
         except ValueError as error:
             if "already been recorded" not in str(error):
+                _save_webhook_diag()
                 return self._send_json(400, {"error": str(error)})
             # duplicate delivery: acknowledge so Stripe stops retrying
+            duplicate = True
+        if duplicate:
+            payments.LAST_EVENT_DIAG["outcome"] = "duplicate_delivery"
+        _save_webhook_diag()
         self._send_json(200, {"received": True})
 
     # -- endpoints

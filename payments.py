@@ -205,6 +205,19 @@ def verify_stripe_signature(raw_body, signature_header, secret=None, tolerance=3
         return False
 
 
+# Diagnostic snapshot of the most recent webhook event, filled in by
+# handle_stripe_event / _session_from_event and surfaced (secret-gated)
+# via /api/stats, so the operator can see exactly what Stripe delivered
+# and why an event did or did not record. Contains no secrets: event
+# type, payload shape, payment status, metadata key names, our own
+# product key and the session ID's last characters only.
+LAST_EVENT_DIAG = {}
+
+
+def _note_diag(**fields):
+    LAST_EVENT_DIAG.update(fields)
+
+
 def _fetch_checkout_session(session_id):
     """Fetch the full Checkout Session from Stripe's API, server-side
     with our secret key. Used when a webhook arrives in Stripe's short
@@ -227,30 +240,59 @@ def _session_from_event(event):
     the partial object is returned and the caller treats the event
     as not recordable."""
     data = event.get("data", {})
+    _note_diag(data_keys=sorted(data.keys()))
     session = data.get("object") or {}
     if session.get("payment_status") is not None and "metadata" in session:
+        _note_diag(payload_shape="snapshot")
         return session
     session_id = session.get("id") or (data.get("related_object") or {}).get("id")
+    _note_diag(payload_shape="thin", session_id_found=bool(session_id))
     if not session_id or not stripe_configured():
+        _note_diag(fetch="skipped")
         return session
-    return _fetch_checkout_session(session_id)
+    try:
+        full = _fetch_checkout_session(session_id)
+    except Exception as error:
+        _note_diag(fetch="failed", fetch_error=error.__class__.__name__)
+        raise
+    _note_diag(fetch="ok")
+    return full
 
 
 def handle_stripe_event(event):
     """Record a purchase for a verified checkout.session.completed event.
     Duplicate deliveries are safely rejected by the record module."""
+    global LAST_EVENT_DIAG
+    LAST_EVENT_DIAG = {
+        "event_type": event.get("type"),
+        "livemode": event.get("livemode"),
+        "event_keys": sorted(event.keys()),
+    }
     if event.get("type") != "checkout.session.completed":
+        _note_diag(outcome="ignored_event_type")
         return None
     session = _session_from_event(event)
-    if session.get("payment_status") != "paid":
-        return None
     meta = session.get("metadata") or {}
+    _note_diag(
+        session_id_tail=(session.get("id") or "")[-10:],
+        payment_status=session.get("payment_status"),
+        amount_total=session.get("amount_total"),
+        metadata_keys=sorted(meta.keys()),
+        product=meta.get("product"),
+        has_customer_id=bool(meta.get("customer_id")),
+        has_investigation_id=bool(meta.get("investigation_id")),
+    )
+    if session.get("payment_status") != "paid":
+        _note_diag(outcome="not_paid")
+        return None
     if not meta.get("customer_id") or not meta.get("product"):
         # A paid session without our metadata is not one of our sales
         # (e.g. a session created by another tool on the same account).
         # Acknowledge it instead of erroring, so Stripe stops retrying.
+        _note_diag(outcome="missing_metadata")
         return None
-    return record.save_purchase(
+    _note_diag(outcome="record_attempted")
+    result = record.save_purchase(
         meta["customer_id"], meta["product"],
         int(session["amount_total"]),
         investigation_id=meta.get("investigation_id") or None,
@@ -258,6 +300,8 @@ def handle_stripe_event(event):
         status="completed",
         payment_provider_reference=session["id"],
     )
+    _note_diag(outcome="recorded")
+    return result
 
 
 def has_purchased(investigation_id, product):
