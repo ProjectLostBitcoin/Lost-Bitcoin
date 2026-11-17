@@ -227,6 +227,101 @@ GUIDES = [
              "Then that's the answer, and it comes from the free assessment — the paid report is only offered when a credible lead exists. For many people, especially executors settling an estate, a documented 'no' is genuinely valuable."),
         ],
     },
+    {
+        "slug": "old-laptop-lost-bitcoin",
+        "title": "Lost Bitcoin on an Old Laptop? Don't Wipe It — Do This Instead",
+        "description": "An old laptop might hold a wallet file, a wallet app, or the signed-in browser and email that unlock everything. Before you wipe, sell, or recycle it — read this.",
+        "dek": "It's in a closet, a drawer, the corner of the office: a laptop from 2013 that takes ten minutes to boot. If you bought Bitcoin back then, that machine may be the single most valuable object in your house right now — not because of what's on the screen, but because of the files, sessions, and email it quietly kept.",
+        "body": """
+<h2>Why an old laptop matters so much</h2>
+<p>Early Bitcoin lived on computers, not phones. An old laptop can hold a wallet program (Bitcoin Core, Electrum, Multibit) with its wallet file, a browser still signed in to an exchange, or the email account that every password reset in the world points to. Any one of those can be the thread that unravels the whole story. People rarely lose Bitcoin all at once — they lose it in the moment they wipe, reset, sell, or recycle the machine that held the only copy of the keys.</p>
+<h2>What NOT to do</h2>
+<ul>
+<li><b>Don't wipe it, reset it, or reinstall the operating system.</b> A factory reset is designed to destroy exactly what you're looking for.</li>
+<li><b>Don't run cleaners, updaters, or "helpful" recovery tools on it</b> before it's been looked at. Work should happen on copies, never on the only original.</li>
+<li><b>Don't sell it, gift it, or take it to e-waste recycling yet.</b> There is no undo.</li>
+<li><b>Don't let anyone remote into it.</b> No legitimate helper needs to drive your computer — and the ones who insist on it are after what's on it.</li>
+<li><b>Don't guess wallet passwords on the original files.</b> Write guesses down on paper instead.</li>
+</ul>
+<h2>What to do instead</h2>
+<ul>
+<li><b>Charge it and turn it on — that's all.</b> Note what you see: wallet programs, browser bookmarks, email accounts. Take photos of the screen for your records (never of any 12–24 word seed phrase, if one appears — that stays off every camera and cloud).</li>
+<li><b>Look for the landmarks:</b> a file called wallet.dat; folders named Bitcoin, Electrum, or Multibit; a browser with saved logins; an email app with old purchase confirmations.</li>
+<li><b>Write down any Bitcoin address you find</b> — in an email, a text file, a wallet program's "receiving addresses." An address can be checked against the public blockchain immediately, safely, and without touching the laptop again.</li>
+<li><b>Keep the laptop somewhere safe and unplugged from daily use.</b> Treat it the way you'd treat a safe deposit box key.</li>
+</ul>
+<h2>What a check can tell you</h2>
+<p>If you find an address, a Wallet Report ($4.99) documents its full public history in plain English: whether it was ever used, what it received and sent, and what it holds now. If the laptop holds a wallet file but the password is gone, an investigation can identify the wallet type and era, inventory your records and password clues, and classify honestly what's confirmed and what's unknown. What nobody can honestly do is promise the laptop's Bitcoin can be recovered — that depends entirely on what survived on it.</p>
+""",
+        "faq": [
+            ("The laptop won't turn on. Is it over?",
+             "Usually not. A dead laptop's hard drive can often be read by a computer technician, and the wallet files copied off it. Never hand over passwords or seed phrases to anyone in the process — files can be copied without them."),
+            ("I already wiped or reset the laptop. Hopeless?",
+             "The wallet files are likely gone, but the trail may not be: exchange accounts, purchase emails, and bank records often survive elsewhere. That's what the free assessment checks."),
+            ("Is the Bitcoin actually 'on' the laptop?",
+             "The coins live on the public blockchain. The laptop holds the keys and records that control and prove them — which is why preserving it matters so much."),
+        ],
+    },
+    {
+        "slug": "bitcoin-address-balance-access",
+        "title": "Your Bitcoin Address Shows a Balance — Can You Actually Access It?",
+        "description": "Anyone can look up any Bitcoin address and see its balance — that part is free, public, and proves nothing about ownership. Here's the difference between seeing Bitcoin and being able to spend it.",
+        "dek": "You found an address — in an old email, a screenshot, a notebook — and a website shows it holding Bitcoin. Real Bitcoin, right there on the screen. So is it yours? Can you get it? This is the exact moment where honest information matters most, because it's also the moment scammers wait for.",
+        "body": """
+<h2>Seeing is free. Seeing proves almost nothing.</h2>
+<p>Bitcoin's blockchain is a public record. Every address, every transaction, every balance is visible to anyone, forever — no account, no permission, no fee. So when a website shows "your" address holding 0.5 BTC, it has shown you something anyone on Earth can see. It has <b>not</b> shown that the Bitcoin is yours, and it has not moved you one inch closer to spending it. Balance proves existence. It never proves ownership, and it never proves access.</p>
+<h2>Access is a completely separate question</h2>
+<p>Spending Bitcoin requires the private key for that address, and keys live in specific places. Which of these is true decides everything:</p>
+<ul>
+<li><b>The address belongs to a wallet you still have</b> — a wallet app, a wallet file, a hardware wallet, or a written seed phrase backup. Then access may be straightforward, and the wallet itself is the tool. (Never type a seed phrase into any website to "check" — that's how wallets get emptied.)</li>
+<li><b>The address was yours, but the wallet is lost.</b> Then the question becomes what survived: a file, a device, a backup, password clues. That's an investigation, and the honest answer can range from "very promising" to "unknown."</li>
+<li><b>The address belongs to an exchange.</b> Exchanges hold Bitcoin in their own addresses. If the address is an exchange's, your route is the exchange account itself — sign-in and account recovery with the exchange — not the address.</li>
+<li><b>The address was never yours.</b> People save addresses for many reasons — a payment they made, a donation, an example from a forum. An address in your notes with a balance is a lead, not a conclusion.</li>
+</ul>
+<h2>What a Wallet Report actually does</h2>
+<p>A Wallet Report ($4.99) documents the address's complete public story in plain English: when it was first and last used, how much it received and sent in total, what it holds now, and whether the activity pattern fits your story — bought in 2014 and untouched since, say. It's evidence you can act on and share with family or an executor. What it can't do is give you the keys: no report can, and anyone who says otherwise is selling the next step of a scam.</p>
+<div class="warn"><p><b>The classic trap:</b> a "recovery service" shows you an address with a balance — free information — then charges a "release fee" to unlock it. There is nothing to release. Locating was never the hard part.</p></div>
+""",
+        "faq": [
+            ("Someone showed me an address and said it's my recovered Bitcoin. Is it?",
+             "They showed you a public web page. Until Bitcoin moves using keys you control, nothing has been recovered — and any 'release fee' they request is the actual product being sold."),
+            ("The balance hasn't moved in years. Does that mean it's mine and waiting?",
+             "It means the keys haven't been used. Millions of addresses sit untouched because their keys are lost, saved, or simply patient. Stillness tells you nothing about whose keys they are."),
+            ("What do I need to actually spend Bitcoin from an address?",
+             "The wallet or backup that holds its private keys — a wallet file and its password, a hardware wallet and its PIN, or a seed phrase kept offline. Those never get shared with anyone, including us: we investigate records and public evidence only."),
+        ],
+    },
+    {
+        "slug": "quadrigacx-lost-bitcoin",
+        "title": "QuadrigaCX Took Your Bitcoin? What Happened — and What's Still Possible",
+        "description": "QuadrigaCX collapsed in 2019 and Canadians lost millions. If you had Bitcoin there, here's what happened, what the bankruptcy process did, and what your own records can still do for you.",
+        "dek": "If you bought Bitcoin in Canada in the 2010s, there's a good chance you used QuadrigaCX — for years it was the country's biggest exchange. Then, in early 2019, it vanished into one of the strangest collapses in finance. Here's the honest version of what happened to the money, and what may still be worth doing.",
+        "body": """
+<h2>What happened, briefly</h2>
+<p>QuadrigaCX stopped withdrawals, its founder was reported dead, and the exchange entered court-supervised bankruptcy in 2019 with roughly 76,000 users owed money. The court-appointed trustee (EY) investigated, recovered what could be recovered, ran a claims process for users, and made partial distributions to creditors whose claims were accepted. For most users who filed claims, that process — not the full balance — was the recovery. This is general information, not legal advice; the trustee's published materials are the authority on the claims process itself.</p>
+<h2>What your own records can still prove</h2>
+<ul>
+<li><b>QuadrigaCX emails</b> — account confirmations, deposit and withdrawal notices. Withdrawal emails matter most: they may contain the address your Bitcoin was sent to.</li>
+<li><b>Bank records</b> — Interac e-transfers and wires to QuadrigaCX/Fortress establish amounts and dates.</li>
+<li><b>Tax filings</b> — purchases or losses you declared create a dated paper trail.</li>
+</ul>
+<h2>What may still be possible</h2>
+<ul>
+<li><b>Bitcoin you withdrew before the collapse.</b> If you ever moved coins off QuadrigaCX to your own wallet, that Bitcoin was never the exchange's — it sits at the address you withdrew to, on the public blockchain, to this day. Finding that address (in a withdrawal email, an old wallet, a notebook) turns a QuadrigaCX story into a checkable one: a Wallet Report ($4.99) documents exactly what that address holds and what happened to it.</li>
+<li><b>Other accounts from the same era.</b> Many QuadrigaCX users also bought or held elsewhere — another exchange, a wallet app. An investigation inventories the whole trail, not just the famous collapse.</li>
+<li><b>A documented loss.</b> For tax and estate purposes, a written record of what was held, what was claimed, and what was received can matter. Your accountant is the right call on how to use it.</li>
+</ul>
+<div class="warn"><p><b>Beware the second wave:</b> "Quadriga recovery agents" charging fees to reopen claims or release funds are a known scam pattern. The only real process was the trustee's. Nobody legitimate charges you to recover QuadrigaCX money today.</p></div>
+""",
+        "faq": [
+            ("Did QuadrigaCX users get anything back?",
+             "Creditors with accepted claims received partial distributions through the bankruptcy — a portion of what was owed, not the whole amount. The trustee's process is the complete and only official channel."),
+            ("I never filed a claim. Can someone reopen it for a fee?",
+             "Claims deadlines passed years ago, and no third party can reopen them. Anyone charging a fee to do so is running a scam — keep your records, and don't pay."),
+            ("I withdrew Bitcoin from QuadrigaCX to my own wallet before it collapsed. Where is it?",
+             "At the address you withdrew to — withdrawals are permanent public records. Find the address in your withdrawal email or old wallet and it can be checked today. That's one of the most promising QuadrigaCX-era leads there is."),
+        ],
+    },
 ]
 
 

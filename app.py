@@ -431,7 +431,10 @@ class Handler(BaseHTTPRequestHandler):
                     "- Found a wallet.dat but forgot the password: https://lostbitcoin.org/guides/wallet-dat-forgot-password\n"
                     "- A spouse or parent passed away and had Bitcoin (executors and families): https://lostbitcoin.org/guides/spouse-parent-passed-away-bitcoin\n"
                     "- Bitcoin recovery service scams — 9 red flags: https://lostbitcoin.org/guides/bitcoin-recovery-service-scams\n"
-                    "- Did I ever have Bitcoin? How to find out: https://lostbitcoin.org/guides/did-i-ever-have-bitcoin\n\n"
+                    "- Did I ever have Bitcoin? How to find out: https://lostbitcoin.org/guides/did-i-ever-have-bitcoin\n"
+                    "- Lost Bitcoin on an old laptop — don't wipe it: https://lostbitcoin.org/guides/old-laptop-lost-bitcoin\n"
+                    "- Your address shows a balance — can you access it?: https://lostbitcoin.org/guides/bitcoin-address-balance-access\n"
+                    "- QuadrigaCX lost Bitcoin — what's still possible: https://lostbitcoin.org/guides/quadrigacx-lost-bitcoin\n\n"
                     "## Contact\n"
                     "hello@lostbitcoin.org\n",
                     "text/plain; charset=utf-8")
