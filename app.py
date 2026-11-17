@@ -158,9 +158,19 @@ def _stats_summary():
             "SELECT COUNT(*),"
             " COALESCE(SUM(CASE WHEN investigation_id IS NULL"
             " THEN 1 ELSE 0 END), 0) FROM purchases").fetchone()
-        conn.close()
         summary["purchases_total"] = row[0]
         summary["purchases_without_investigation"] = row[1]
+        detail = conn.execute(
+            "SELECT product, amount_minor, currency, status, created_at,"
+            " investigation_id, customer_id,"
+            " substr(payment_provider_reference, -10)"
+            " FROM purchases ORDER BY created_at").fetchall()
+        conn.close()
+        summary["purchases_detail"] = [
+            {"product": p, "amount_minor": a, "currency": cur,
+             "status": s, "created_at": ts, "investigation_id": inv,
+             "customer_id": cust, "reference_tail": ref}
+            for p, a, cur, s, ts, inv, cust, ref in detail]
     except Exception:
         pass
     return summary
