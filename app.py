@@ -532,6 +532,10 @@ class Handler(BaseHTTPRequestHandler):
         name = str(data.get("name", "")).strip()
         email = str(data.get("email", "")).strip()
         starting_point = data.get("starting_point", "lost_bitcoin")
+        if data.get("consent") is not True:
+            return self._send_json(400, {
+                "error": "Please tick the consent box so we can start "
+                         "your investigation."})
         try:
             created = record.create_customer(name, email, starting_point)
             created["resumed"] = False
@@ -601,6 +605,37 @@ class Handler(BaseHTTPRequestHandler):
             self._send_json(200, {"report_id": result["report_id"], "markdown": result["markdown"]})
         elif path == "/api/checkout":
             product = str(data.get("product", ""))
+            # Eligibility is enforced here, not just in the page: a paid
+            # report is only sold for the flow it belongs to, and only
+            # when a credible lead exists — the promise the site makes
+            # in its FAQ and pricing copy.
+            if product == "investigation_report":
+                if full["starting_point"] != "lost_bitcoin":
+                    return self._send_json(400, {
+                        "error": "The Investigation Report belongs to the "
+                                 "lost-Bitcoin investigation. This record "
+                                 "is an address investigation — its paid "
+                                 "report is the Wallet Report."})
+                if not controller.has_credible_lead(investigation_id):
+                    return self._send_json(400, {
+                        "error": "The Investigation Report is only sold "
+                                 "when a credible lead exists. Your free "
+                                 "assessment has not found one yet — there "
+                                 "is nothing to charge you for."})
+            elif product == "wallet_report":
+                if full["starting_point"] != "bitcoin_address":
+                    return self._send_json(400, {
+                        "error": "The Wallet Report belongs to the "
+                                 "address investigation. This record is a "
+                                 "lost-Bitcoin investigation — its paid "
+                                 "report is the Investigation Report."})
+            elif product == "ai_walkthrough":
+                if not controller.has_credible_lead(investigation_id):
+                    return self._send_json(400, {
+                        "error": "AI Guided Next Steps walks through the "
+                                 "recommendations from a credible lead. "
+                                 "Your free assessment has not found one "
+                                 "yet — there is nothing to charge you for."})
             checkout = payments.create_checkout(
                 investigation_id, full["customer"]["customer_id"], product,
                 address_count=len(full["addresses"]),

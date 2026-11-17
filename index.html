@@ -48,7 +48,7 @@
 }
 </script>
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230f5c63'/%3E%3Ctext x='32' y='44' font-size='34' font-family='sans-serif' font-weight='bold' fill='%23e8a838' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230D1830'/%3E%3Ctext x='32' y='44' font-size='34' font-family='sans-serif' font-weight='bold' fill='%23F0B90B' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
 
 <style>
 
@@ -686,6 +686,7 @@ footer {
     <p id="startBlurb">So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.</p>
     <input id="startName" type="text" placeholder="Your name">
     <input id="startEmail" type="email" placeholder="Your email address">
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin:12px 0;text-align:left"><input id="startConsent" type="checkbox" style="margin-top:2px"> <span>I agree to the <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms" target="_blank" rel="noopener">Terms of Service</a>.</span></label>
     <button class="button" onclick="beginInvestigation()">CONTINUE →</button>
     <p id="startMsg" style="font-size:13px"></p>
 </section>
@@ -1147,8 +1148,9 @@ async function beginInvestigation() {
     const email = document.getElementById("startEmail").value.trim();
     const msg = document.getElementById("startMsg");
     if (!name || !email) { msg.textContent = "Please add your name and email so we can save your work."; return; }
+    if (!document.getElementById("startConsent").checked) { msg.textContent = "Please tick the box agreeing to the Privacy Policy and Terms so we can start."; return; }
     try {
-        const data = await api("/api/start", { name, email, starting_point: pendingStart });
+        const data = await api("/api/start", { name, email, starting_point: pendingStart, consent: true });
         session = data;
         localStorage.setItem("lb_session", JSON.stringify(data));
         if (data.starting_point === "bitcoin_address") { show("address"); }

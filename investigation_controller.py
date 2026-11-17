@@ -158,18 +158,12 @@ _LEAD_SIGNALS = {
 }
 
 
-def assess_lost_bitcoin(investigation_id):
+def _compute_leads(full):
     """
-    Rules-based preliminary assessment from the customer's own answers.
-    Everything from the customer is a POSSIBLE LEAD at best — none of it
-    is confirmed until checked against records or the blockchain.
-    Returns a summary dict and saves recommendations + the assessment
-    as a discovery/evidence trail.
+    Read-only lead computation shared by the assessment and by checkout
+    eligibility: which credible leads do this record's own answers and
+    addresses support right now? Returns (leads, missing, latest).
     """
-    full = record.get_complete_investigation(investigation_id)
-    if full is None:
-        raise ValueError("Investigation not found.")
-
     latest = {}
     for answer in full["answers"]:
         latest[answer["question_key"]] = answer["answer_value"]
@@ -186,6 +180,35 @@ def assess_lost_bitcoin(investigation_id):
         leads.append("bitcoin_address")
     if latest.get("exchange") and "not sure" not in latest["exchange"].lower():
         leads.append("exchange_named")
+    return leads, missing, latest
+
+
+def has_credible_lead(investigation_id):
+    """
+    True when the record currently supports a credible lead — the same
+    test the assessment uses before offering any paid product. Checkout
+    enforces it server-side so a report is never sold without one.
+    """
+    full = record.get_complete_investigation(investigation_id)
+    if full is None:
+        raise ValueError("Investigation not found.")
+    leads, _missing, _latest = _compute_leads(full)
+    return bool(leads)
+
+
+def assess_lost_bitcoin(investigation_id):
+    """
+    Rules-based preliminary assessment from the customer's own answers.
+    Everything from the customer is a POSSIBLE LEAD at best — none of it
+    is confirmed until checked against records or the blockchain.
+    Returns a summary dict and saves recommendations + the assessment
+    as a discovery/evidence trail.
+    """
+    full = record.get_complete_investigation(investigation_id)
+    if full is None:
+        raise ValueError("Investigation not found.")
+
+    leads, missing, latest = _compute_leads(full)
 
     credible_lead = bool(leads)
 

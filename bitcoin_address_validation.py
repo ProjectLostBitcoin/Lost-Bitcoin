@@ -135,6 +135,14 @@ def validate_bitcoin_address(address):
     if not address:
         raise ValueError("Bitcoin address cannot be empty.")
     if any(c.isspace() for c in address):
+        if len(address.split()) >= 4:
+            # Several words in the address box is a seed phrase until
+            # proven otherwise — refuse it with the protective message,
+            # never a bare format error.
+            raise ValueError(
+                "This looks like a seed phrase or private key. "
+                "Lost Bitcoin never asks for or stores those. "
+                "Please remove it and keep it only with you.")
         raise ValueError("Bitcoin address cannot contain spaces.")
     lowered = address.lower()
     if lowered.startswith(("bc1", "tb1")):
