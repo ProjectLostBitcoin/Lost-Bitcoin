@@ -46,7 +46,8 @@ class TestApi(unittest.TestCase):
 
     def start_customer(self, email="api@example.com", starting="lost_bitcoin"):
         status, data = call(self.base, "POST", "/api/start",
-                            {"name": "Api Test", "email": email, "starting_point": starting})
+                            {"name": "Api Test", "email": email, "starting_point": starting,
+                             "consent": True})
         self.assertEqual(status, 200, data)
         return data
 
@@ -330,8 +331,54 @@ class TestApi(unittest.TestCase):
 
     def test_bad_email_rejected(self):
         status, _ = call(self.base, "POST", "/api/start",
-                         {"name": "X", "email": "nope", "starting_point": "lost_bitcoin"})
+                         {"name": "X", "email": "nope", "starting_point": "lost_bitcoin",
+                          "consent": True})
         self.assertEqual(status, 400)
+
+    def test_start_requires_consent(self):
+        status, data = call(self.base, "POST", "/api/start",
+                            {"name": "No Consent", "email": "noconsent@example.com",
+                             "starting_point": "lost_bitcoin"})
+        self.assertEqual(status, 400)
+        self.assertIn("consent", data["error"])
+
+    def test_checkout_refused_without_credible_lead(self):
+        s = self.start_customer("nolead@example.com")
+        inv, tok = s["investigation_id"], s["token"]
+        status, _ = call(self.base, "POST", "/api/run", {"investigation_id": inv}, tok)
+        self.assertEqual(status, 200)
+        for product in ("investigation_report", "ai_walkthrough"):
+            status, data = call(self.base, "POST", "/api/checkout",
+                                {"investigation_id": inv, "product": product}, tok)
+            self.assertEqual(status, 400, (product, data))
+            self.assertIn("credible lead", data["error"])
+
+    def test_checkout_product_must_match_flow(self):
+        s = self.start_customer("mismatch@example.com", "bitcoin_address")
+        inv, tok = s["investigation_id"], s["token"]
+        status, data = call(self.base, "POST", "/api/checkout",
+                            {"investigation_id": inv, "product": "investigation_report"}, tok)
+        self.assertEqual(status, 400)
+        self.assertIn("Wallet Report", data["error"])
+        s = self.start_customer("mismatch2@example.com")
+        inv, tok = s["investigation_id"], s["token"]
+        call(self.base, "POST", "/api/answer",
+             {"investigation_id": inv, "question_key": "device", "answer_value": "Yes"}, tok)
+        status, data = call(self.base, "POST", "/api/checkout",
+                            {"investigation_id": inv, "product": "wallet_report"}, tok)
+        self.assertEqual(status, 400)
+        self.assertIn("Investigation Report", data["error"])
+
+    def test_seed_phrase_in_address_field_gets_protective_message(self):
+        s = self.start_customer("seedaddr@example.com", "bitcoin_address")
+        inv, tok = s["investigation_id"], s["token"]
+        seed = ("abandon ability able about above absent absorb abstract "
+                "absurd abuse access accident")
+        status, data = call(self.base, "POST", "/api/address",
+                            {"investigation_id": inv, "address": seed}, tok)
+        self.assertEqual(status, 400)
+        self.assertIn("seed phrase", data["error"])
+        self.assertIn("never asks", data["error"])
 
 
 if __name__ == "__main__":
