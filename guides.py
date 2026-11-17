@@ -183,6 +183,50 @@ GUIDES = [
              "Your exchange account recovery goes through the exchange itself. Your wallet password is yours alone. Anyone asking for either is red flag #3 — walk away."),
         ],
     },
+    {
+        "slug": "did-i-ever-have-bitcoin",
+        "title": "Did I Ever Have Bitcoin? How to Find Out for Sure",
+        "description": "Wondering if you ever actually bought Bitcoin years ago? There's no registry to look you up in — but buying almost always left a trail. Here's how to check, step by step.",
+        "dek": "Maybe you bought a little Bitcoin in 2015 and life moved on. Maybe a family member mentioned it, or you found something odd in old paperwork. The honest starting point: there is no list of Bitcoin owners anywhere, and nobody can look you up by name. But almost nobody bought Bitcoin without leaving evidence — and evidence can be checked.",
+        "body": """
+<h2>The short answer</h2>
+<p>Bitcoin has no registry, no head office, and no account with your name on it. Coins are controlled by whoever holds the keys to an address — and addresses are public strings of characters, not names. So the question "did I ever have Bitcoin?" is never answered by a lookup. It's answered by a trail: the records of buying it, and the public blockchain record of where it went. Both can still exist years later — blockchain records are permanent, and email and bank records often outlast our memories.</p>
+<h2>The five places the trail hides</h2>
+<ul>
+<li><b>Your old email.</b> Search every mailbox you've ever had for the names of exchanges (Coinbase, Kraken, QuadrigaCX, Coinsquare, Newton, Shakepay, Mt. Gox) and for words like "purchase confirmation," "withdrawal," and "deposit." A single confirmation email can date and place the whole story.</li>
+<li><b>Bank and credit card statements.</b> Transfers to an exchange name the company and the exact dates. Even a small $50 or $100 transfer from years ago is a confirmed starting point.</li>
+<li><b>Tax records.</b> If you (or your accountant) ever declared a purchase or a sale, it's written down. For executors, this is often the very first sign Bitcoin existed in an estate at all.</li>
+<li><b>Old devices.</b> A retired laptop or phone may hold a wallet app, a browser still signed in somewhere, or backup files. Don't wipe, update, or "clean up" old devices before they're checked — tidying up is how trails get destroyed.</li>
+<li><b>Paper and hardware.</b> A notebook, a printed page, a small USB-like device (a Ledger or Trezor). If you find 12–24 handwritten words, that's a seed phrase: never photograph it, never type it into a website, never send it to anyone. Store it like cash.</li>
+</ul>
+<h2>What the evidence can actually prove</h2>
+<ul>
+<li><b>An address tells its whole public story.</b> If you find a Bitcoin address anywhere in the trail, its complete history is public and checkable: when it was first and last used, how much it received and sent in total, and what it holds now. That's what a Wallet Report ($4.99) documents in plain English. One warning that matters: a balance proves the address holds Bitcoin — it never, by itself, proves the Bitcoin is yours or that you can still access it.</li>
+<li><b>An exchange account is often recoverable</b> through the exchange's own sign-in and account-recovery process, using the original email. Exchanges that shut down are harder — some, like QuadrigaCX, went through court-supervised processes — but records of what you held can still matter.</li>
+<li><b>Sometimes the honest answer is "unknown."</b> If every record is gone, a good investigation says so plainly instead of inventing hope. Knowing for sure — one way or the other — is worth something by itself, especially for taxes and estates.</li>
+</ul>
+<h2>Two traps to avoid while you check</h2>
+<ul>
+<li><b>Anyone claiming a name-based lookup is lying.</b> There is no database of Bitcoin owners to search — a service that says "we found your Bitcoin, pay a fee to release it" is running the oldest scam in this space. Locating a public balance is free and proves nothing.</li>
+<li><b>Never "check" by entering secrets.</b> No website, app, or person needs your seed phrase or wallet password to tell you whether you had Bitcoin. The moment one asks, you're not being helped — you're being robbed.</li>
+</ul>
+<h2>A simple order of operations</h2>
+<ul>
+<li><b>First,</b> search old email and statements — an hour of searching beats a week of guessing.</li>
+<li><b>Second,</b> preserve any old device or paper exactly as you found it.</li>
+<li><b>Third,</b> if you find an address, check it before concluding anything — addresses that look empty sometimes aren't the whole story, and busy ones settle the question immediately.</li>
+<li><b>Fourth,</b> if the trail points somewhere real, that's a credible lead — and that's the only point where a paid Investigation Report ($9.99) makes sense. If there's no lead, you shouldn't be charged, and we won't offer one.</li>
+</ul>
+""",
+        "faq": [
+            ("Can you look me up by name or email and tell me if I had Bitcoin?",
+             "No — and neither can anyone else. No such registry exists. What an investigation does is follow your evidence: emails, statements, tax records, devices, and any addresses, and check them against the public blockchain."),
+            ("I bought on an exchange that shut down years ago. Is there any point checking?",
+             "Yes. Your own records (emails, statements) can still prove what you bought and when, and some defunct exchanges have claims or distribution processes where documentation matters. What can be recovered varies — an honest assessment separates what's confirmed from what's unknown."),
+            ("What if the answer turns out to be that I never had any, or it's gone?",
+             "Then that's the answer, and it comes from the free assessment — the paid report is only offered when a credible lead exists. For many people, especially executors settling an estate, a documented 'no' is genuinely valuable."),
+        ],
+    },
 ]
 
 
