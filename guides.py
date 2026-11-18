@@ -326,7 +326,7 @@ GUIDES = [
         "slug": "when-we-refuse-your-money",
         "title": "When We Will Refuse Your Money",
         "description": "Lost Bitcoin will not sell you a report when there is nothing to report. Here is the full list of the situations where we refuse payment — and what you get instead, for free.",
-        "dek": "Most businesses in this space take your money first and explain later. We do the opposite: the free assessment comes first, and a paid report is only offered when the assessment finds something real to report. That is not a slogan. Since 2026-11-17 the site enforces it in the checkout itself — the payment step refuses the $9.99 Investigation Report and the $6.99 walkthrough when there is no credible lead, even if someone reaches checkout directly.",
+        "dek": "Most businesses in this space take your money first and explain later. We do the opposite: the free assessment comes first, and a paid report is only offered when the assessment finds something real to report.",
         "body": """
 <p>Here is the list, in plain English, so you can hold us to it.</p>
 <h2>We will not sell you an Investigation Report when there is no credible lead</h2>
