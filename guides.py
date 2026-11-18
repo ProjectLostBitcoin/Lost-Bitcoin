@@ -383,11 +383,15 @@ phrase with anyone.</b></p>
 
 
 def render_post(slug):
-    for g in GUIDES:
+    for i, g in enumerate(GUIDES):
         if g["slug"] == slug:
+            related = [GUIDES[(i + k) % len(GUIDES)] for k in (1, 2, 3)]
+            rel = ('<h2>Keep reading</h2><ul>' + "".join(
+                f'<li><a href="/guides/{r["slug"]}">{html.escape(r["title"])}</a></li>'
+                for r in related) + '</ul>')
             body = (f"<h1>{html.escape(g['title'])}</h1>\n"
                     f'<p class="dek">{html.escape(g["dek"])}</p>\n'
-                    + g["body"] + _faq_html(g["faq"]) + _CTA
+                    + g["body"] + _faq_html(g["faq"]) + rel + _CTA
                     + '<p><a href="/guides">← All guides</a></p>')
             return _page(g["title"], g["description"],
                          f"/guides/{slug}", body,
