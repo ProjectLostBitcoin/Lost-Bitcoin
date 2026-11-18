@@ -434,7 +434,8 @@ class Handler(BaseHTTPRequestHandler):
                     "- Did I ever have Bitcoin? How to find out: https://lostbitcoin.org/guides/did-i-ever-have-bitcoin\n"
                     "- Lost Bitcoin on an old laptop — don't wipe it: https://lostbitcoin.org/guides/old-laptop-lost-bitcoin\n"
                     "- Your address shows a balance — can you access it?: https://lostbitcoin.org/guides/bitcoin-address-balance-access\n"
-                    "- QuadrigaCX lost Bitcoin — what's still possible: https://lostbitcoin.org/guides/quadrigacx-lost-bitcoin\n\n"
+                    "- QuadrigaCX lost Bitcoin — what's still possible: https://lostbitcoin.org/guides/quadrigacx-lost-bitcoin\n"
+                    "- When we will refuse your money: https://lostbitcoin.org/guides/when-we-refuse-your-money\n\n"
                     "## Contact\n"
                     "hello@lostbitcoin.org\n",
                     "text/plain; charset=utf-8")

@@ -322,6 +322,45 @@ GUIDES = [
              "At the address you withdrew to — withdrawals are permanent public records. Find the address in your withdrawal email or old wallet and it can be checked today. That's one of the most promising QuadrigaCX-era leads there is."),
         ],
     },
+    {
+        "slug": "when-we-refuse-your-money",
+        "title": "When We Will Refuse Your Money",
+        "description": "Lost Bitcoin will not sell you a report when there is nothing to report. Here is the full list of the situations where we refuse payment — and what you get instead, for free.",
+        "dek": "Most businesses in this space take your money first and explain later. We do the opposite: the free assessment comes first, and a paid report is only offered when the assessment finds something real to report. That is not a slogan. Since 2026-11-17 the site enforces it in the checkout itself — the payment step refuses the $9.99 Investigation Report and the $6.99 walkthrough when there is no credible lead, even if someone reaches checkout directly.",
+        "body": """
+<p>Here is the list, in plain English, so you can hold us to it.</p>
+<h2>We will not sell you an Investigation Report when there is no credible lead</h2>
+<p>A credible lead is something specific enough to investigate: an address with activity, a purchase record, a wallet file, an exchange account, a device that has not been searched. If the free assessment finds none of those, no $9.99 offer appears at all — and checkout will refuse one if it is attempted. You are not charged, and you are not left guessing: the assessment tells you what was checked and what would change the answer.</p>
+<h2>We will not sell you the guided walkthrough when there is nothing to walk through</h2>
+<p>The $6.99 AI-guided walkthrough is a guided tour of the next steps for a real lead. With no lead, there are no next steps to guide, so it is gated the same way as the report. The one exception is the Wallet Report path: there, an address you provide counts as the lead, so Wallet Report customers are unaffected.</p>
+<h2>We will not charge you for an address that was never used — as an investigation</h2>
+<p>If the only address you have has never had a single transaction, there is no investigation to sell you on it: the blockchain record is empty, and we will say so in the free assessment. A Wallet Report ($4.99 for the first address, $1.99 for each additional address) can still document that empty record in writing if you want a dated record of it — for example, for an estate file — but we will not dress it up as a discovery, and we will never offer you the $9.99 Investigation Report on an address with nothing to investigate.</p>
+<h2>We will not take your money for a report that says "nothing found"</h2>
+<p>That is the situation the rule above exists to prevent. A paid report should contain findings — confirmed, strong possibility, or possible lead — and the next steps that follow from them. If the honest finding is "unknown," that finding comes from the free assessment, not from a $9.99 purchase.</p>
+<h2>We will refuse your seed phrase, private key, and wallet password — even if you offer them</h2>
+<p>Our system actively rejects seed phrases typed into the address box, and we never ask for or store them anywhere else. No legitimate service needs the thing that can spend your money in order to investigate what happened to it. Anyone who asks for it — including anyone using our name — is trying to steal your Bitcoin.</p>
+<h2>We will not guarantee recovery, and we will not take a fee that pretends we can</h2>
+<p>Recovery is never guaranteed, and no report we sell says otherwise. If the coins moved years ago to an address nobody can identify, or the only copy of the keys is provably destroyed, we will tell you that instead of selling you hope. The recovery industry's standard deal is 10–20% of the wallet, payable only if they succeed — and only if you hand them a wallet file. We do not crack passwords and we do not take a percentage of anything. Our flat prices are on the homepage, and they are the whole price.</p>
+<h2>We will not contact you first, and we will not take payment anywhere but the site</h2>
+<p>We will never DM you on Telegram, WhatsApp, Reddit, or anywhere else. We will never ask you to pay in Bitcoin, or to send money to a wallet address, or to pay a "release fee" or "tax" to unlock anything. The only way to start is the free assessment on lostbitcoin.org, and the only payment route is Stripe checkout on the site. If someone contacts you claiming to be us and asking for any of the above, it is not us.</p>
+<h2>What you get instead, for free</h2>
+<ul>
+<li><b>The assessment itself.</b> What was checked, what was found, and what was not — classified honestly as confirmed, strong possibility, possible lead, or unknown.</li>
+<li><b>What would change the answer.</b> For example: "if you find any email from an exchange dated 2015–2018, or a file named wallet.dat, this case reopens." A dead end with a door left open is worth more than a dead end dressed up as a report.</li>
+<li><b>Nothing to buy, nothing to chase.</b> If there is no lead, there is no offer to decline. You can walk away knowing you checked, for free.</li>
+</ul>
+""",
+        "faq": [
+            ("Is this just marketing? How do I know you actually refuse payment?",
+             "The rule is enforced by the site, not by a promise: the checkout step checks for a credible lead before it will take payment for the Investigation Report or the walkthrough. And the free assessment is genuinely free — no card is asked for before it."),
+            ("I was told my Bitcoin is gone forever. Will you still charge me to check?",
+             "No. The assessment is free, and if it confirms there is nothing to chase, that is the answer — free, in writing, with what would change it."),
+            ("My address shows a balance. Does that mean you will sell me a report?",
+             "A balance is a lead, so a Wallet Report ($4.99) can document exactly what that address shows. A balance alone does not prove the Bitcoin is yours or that you can access it — a report will say that plainly, and the Investigation Report is only offered when the assessment finds a credible lead to investigate further."),
+            ("What if I disagree with a \"no lead\" finding?",
+             "Bring the evidence: an old email, a statement, a device, a second address. New evidence reopens the case, and the assessment can be run again."),
+        ],
+    },
 ]
 
 
