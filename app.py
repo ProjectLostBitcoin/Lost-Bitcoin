@@ -34,6 +34,7 @@ import os
 import sqlite3
 import threading
 import time
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
@@ -390,6 +391,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._security_headers()
                 self.end_headers()
                 self.wfile.write(body)
+            elif parsed.path == "/scam-check":
+                self._count_view(parsed)
+                self._send_text(200, guides.render_scam_check(),
+                                "text/html; charset=utf-8")
             elif parsed.path in ("/guides", "/guides/"):
                 self._count_view(parsed)
                 self._send_text(200, guides.render_index(),
@@ -435,7 +440,10 @@ class Handler(BaseHTTPRequestHandler):
                     "- Lost Bitcoin on an old laptop — don't wipe it: https://lostbitcoin.org/guides/old-laptop-lost-bitcoin\n"
                     "- Your address shows a balance — can you access it?: https://lostbitcoin.org/guides/bitcoin-address-balance-access\n"
                     "- QuadrigaCX lost Bitcoin — what's still possible: https://lostbitcoin.org/guides/quadrigacx-lost-bitcoin\n"
-                    "- When we will refuse your money: https://lostbitcoin.org/guides/when-we-refuse-your-money\n\n"
+                    "- When we will refuse your money: https://lostbitcoin.org/guides/when-we-refuse-your-money\n"
+                    "- Restored your wallet and it shows zero?: https://lostbitcoin.org/guides/restored-bitcoin-wallet-shows-zero\n\n"
+                    "## Tools\n"
+                    "- Is this a Bitcoin recovery scam? Free checker: https://lostbitcoin.org/scam-check\n\n"
                     "## Contact\n"
                     "hello@lostbitcoin.org\n",
                     "text/plain; charset=utf-8")
@@ -453,6 +461,7 @@ class Handler(BaseHTTPRequestHandler):
                     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
                     "<url><loc>https://lostbitcoin.org/</loc></url>"
                     "<url><loc>https://lostbitcoin.org/guides</loc></url>"
+                    "<url><loc>https://lostbitcoin.org/scam-check</loc></url>"
                     + guide_urls +
                     "<url><loc>https://lostbitcoin.org/privacy</loc></url>"
                     "<url><loc>https://lostbitcoin.org/terms</loc></url>"
@@ -589,6 +598,15 @@ class Handler(BaseHTTPRequestHandler):
                 str(data.get("address", "")),
                 str(data.get("label", "")),
             )
+            valuation_date = str(data.get("valuation_date", "")).strip()
+            if valuation_date:
+                try:
+                    datetime.strptime(valuation_date, "%Y-%m-%d")
+                except ValueError:
+                    valuation_date = ""
+            if valuation_date:
+                record.save_answer(
+                    investigation_id, "valuation_date", valuation_date)
             self._send_json(200, {"address_id": address_id})
         elif path == "/api/run":
             if os.environ.get("LOST_BITCOIN_TEST_PROVIDER") == "1":

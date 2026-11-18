@@ -95,6 +95,52 @@ def build_report_markdown(investigation_id):
         for a in full["addresses"]:
             label = f" — {a['label']}" if a["label"] else ""
             lines.append(f"- `{a['address']}`{label}")
+
+    valuation_date = None
+    for a in full["answers"]:
+        if a["question_key"] == "valuation_date":
+            valuation_date = a["answer_value"]
+    if (full["starting_point"] == "bitcoin_address" and valuation_date
+            and full["addresses"]):
+        import blockchain_provider
+        import historical_price
+
+        def _fmt_btc(satoshis):
+            text = f"{satoshis / 100_000_000:.8f}".rstrip("0").rstrip(".")
+            return text or "0"
+
+        lines += ["", f"## Valuation on {valuation_date}"]
+        price = historical_price.price_on(valuation_date)
+        for a in full["addresses"]:
+            try:
+                sats = blockchain_provider.fetch_balance_on_date(
+                    a["address"], valuation_date)
+            except blockchain_provider.BlockchainUnavailable:
+                lines.append(
+                    f"- `{a['address']}` — the on-chain balance for "
+                    f"{valuation_date} could not be retrieved, so no "
+                    "figure is stated.")
+                continue
+            line = (f"- `{a['address']}` — balance on {valuation_date}: "
+                    f"**{_fmt_btc(sats)} BTC**")
+            if price:
+                cad_value = sats / 100_000_000 * price["cad"]
+                line += (f" ≈ **${cad_value:,.2f} CAD** (Bitcoin price "
+                         f"that day: ${price['cad']:,.2f} CAD, source: "
+                         f"{price['source']})")
+            else:
+                line += (" (the CAD price for that date could not be "
+                         "retrieved, so no dollar figure is stated)")
+            lines.append(line + " _(source: blockstream.info)_")
+        lines += [
+            "",
+            "This dated valuation is provided for estate and "
+            "record-keeping purposes. In Canada, cryptocurrency is "
+            "generally deemed to be disposed of at fair market value on "
+            "the date of death — your accountant or lawyer is the right "
+            "call on how to use these figures. This is general "
+            "information, not tax or legal advice.",
+        ]
     if full["discoveries"]:
         lines += ["", "## Investigation steps completed"]
         for d in full["discoveries"]:

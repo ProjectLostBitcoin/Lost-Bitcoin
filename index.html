@@ -701,6 +701,8 @@ footer {
     <p>We'll check it against the public blockchain and prepare your Wallet Report. First address $4.99, each additional address $1.99. An address balance does not prove ownership.</p>
     <input id="addrInput" type="text" placeholder="Bitcoin address (e.g. 1A1z…, 3…, bc1…)">
     <input id="addrLabel" type="text" placeholder="Label (optional) — e.g. 'old laptop wallet'">
+    <p style="font-size:13px;margin:14px 0 6px">For an estate, add the date of death and your report will include what the address held on that date, with its CAD value that day.</p>
+    <input id="addrValuationDate" type="date" aria-label="Valuation date (optional)">
     <button class="button" onclick="submitAddress()">CHECK THIS ADDRESS →</button>
     <br>
     <button class="button secondary" onclick="finishAddresses()">SEE MY RESULTS →</button>
@@ -1199,7 +1201,8 @@ async function submitAddress() {
     if (!address) { msg.textContent = "Please enter an address."; return; }
     if (!session) { msg.textContent = "Please start with your name and email first so we can save this."; return; }
     try {
-        await api("/api/address", { investigation_id: session.investigation_id, address, label: label.value.trim() });
+        const vdate = document.getElementById("addrValuationDate");
+        await api("/api/address", { investigation_id: session.investigation_id, address, label: label.value.trim(), valuation_date: vdate ? vdate.value : "" });
         myAddresses.push(address);
         input.value = ""; label.value = "";
         msg.textContent = "Checking the blockchain…";

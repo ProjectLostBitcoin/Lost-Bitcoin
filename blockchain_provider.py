@@ -85,3 +85,67 @@ def fetch_address_info(address):
         "is_genesis_address": address == GENESIS_ADDRESS,
         "source": "blockstream.info",
     }
+
+
+def _tx_delta_for_address(tx, address):
+    """Net satoshi change one transaction caused for one address."""
+    delta = 0
+    for vout in tx.get("vout", []):
+        if vout.get("scriptpubkey_address") == address:
+            delta += vout.get("value", 0)
+    for vin in tx.get("vin", []):
+        prev = vin.get("prevout") or {}
+        if prev.get("scriptpubkey_address") == address:
+            delta -= prev.get("value", 0)
+    return delta
+
+
+def fetch_balance_on_date(address, date_iso):
+    """
+    Confirmed balance (satoshis) the address held at the end of
+    `date_iso` (YYYY-MM-DD, UTC). Computed as the current confirmed
+    balance minus the net effect of every confirmed transaction after
+    that date — all from the same public API data. Raises
+    BlockchainUnavailable on any failure or if the history is too long
+    to page through completely (the figure is then simply not stated,
+    never estimated).
+    """
+    from datetime import datetime, time, timezone
+
+    try:
+        day = datetime.strptime(date_iso, "%Y-%m-%d").date()
+    except (TypeError, ValueError) as error:
+        raise BlockchainUnavailable("Invalid valuation date.") from error
+    cutoff = int(datetime.combine(day, time.max, tzinfo=timezone.utc).timestamp())
+
+    info = fetch_address_info(address)
+    after_delta = 0
+    after_txid = None
+    for _page in range(40):
+        endpoint = f"/address/{address}/txs"
+        if after_txid:
+            endpoint += f"?after_txid={after_txid}"
+        txs = _api_request(endpoint) or []
+        if not txs:
+            break
+        reached_cutoff = False
+        for tx in txs:
+            status = tx.get("status", {})
+            if not status.get("confirmed"):
+                continue
+            block_time = status.get("block_time")
+            if block_time is None:
+                continue
+            if block_time <= cutoff:
+                reached_cutoff = True
+                break
+            after_delta += _tx_delta_for_address(tx, address)
+        if reached_cutoff or len(txs) < 25:
+            break
+        after_txid = txs[-1].get("txid")
+        if not after_txid:
+            break
+    else:
+        raise BlockchainUnavailable(
+            "Address history too long to value on a past date.")
+    return info["balance_satoshis"] - after_delta

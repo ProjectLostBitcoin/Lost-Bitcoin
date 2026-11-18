@@ -144,6 +144,7 @@ GUIDES = [
         "description": "Searching 'bitcoin recovery service scam' before you pay? Good instinct. The 9 red flags every fake recovery service shows — and a checklist you can use on any service, including us.",
         "dek": "If you're reading this, there's a decent chance you're mid-conversation with someone who says they can get your Bitcoin back. Pause. Pausing is free, and it's the one move the scammers can't counter — everything on this page can be checked in ten minutes, before any money moves.",
         "body": """
+<div class="notice"><p><b>Got a message you're unsure about right now?</b> Paste it into our <a href="/scam-check">free scam checker</a> — it scans for the patterns on this page automatically, in your browser, and nothing you paste is sent or stored.</p></div>
 <h2>Why this scam works so well</h2>
 <p>Losing Bitcoin hurts, and the fake-recovery industry knows it. The FBI has warned about crypto recovery scams that charge upfront fees for recoveries that never happen — and the cruellest version targets people <i>who were already scammed once</i>, promising to recover the stolen funds for one more "fee." Real help exists. It just never looks like this:</p>
 <h2>The 9 red flags</h2>
@@ -361,6 +362,40 @@ GUIDES = [
              "Bring the evidence: an old email, a statement, a device, a second address. New evidence reopens the case, and the assessment can be run again."),
         ],
     },
+    {
+        "slug": "restored-bitcoin-wallet-shows-zero",
+        "title": "Restored Your Bitcoin Wallet and It Shows Zero? Read This Before You Panic",
+        "description": "You restored your wallet from its seed phrase and the balance says zero. That usually means the wallet is looking in the wrong place — not that the Bitcoin is gone. The four causes, in order.",
+        "dek": "You found your seed phrase, restored the wallet, it opened — and the balance is zero. This is one of the most common sights in Bitcoin, and one of the most misleading: a zero on screen usually means the wallet is looking at the wrong set of addresses, not that your coins are gone.",
+        "body": """
+<h2>First, check the address — not the app</h2>
+<p>The blockchain is the ground truth, and the app is only a window. If you know any address you actually used back then (from an exchange withdrawal email, a statement, or a notebook), look it up on a public block explorer, or have it checked. If that address shows your balance, your Bitcoin exists — and everything below is about making a wallet look at the right place. If you have no address at all, that check is what an investigation starts with.</p>
+<h2>Cause 1: the passphrase (the "25th word")</h2>
+<p>Many wallets offer an optional passphrase on top of the 12 or 24 words. It is not a password for the same wallet — it creates a completely different wallet. Restore without it (or with a slightly different one — it is case-sensitive, and a typo counts) and you get a perfectly valid, perfectly empty wallet. If your original setup used a passphrase, the words alone will never show the balance. Think hard about whether you set one, and try the exact spellings you would have used — on the device or app itself, never on a website.</p>
+<h2>Cause 2: the address type</h2>
+<p>Bitcoin addresses come in generations: Legacy (starting with 1), SegWit (3), and Native SegWit (bc1). A wallet restored in an app that defaults to a newer type may show only new-style addresses — an empty set — while your coins sit on the older type from the same seed. Look in the app's restore or advanced settings for the address type or "script type," and check each type before concluding anything.</p>
+<h2>Cause 3: the derivation path and accounts</h2>
+<p>Under the hood, wallets find addresses by following a "derivation path," and different apps and eras used different ones (you may see numbers like m/44', m/49', m/84' — each points at a different address family). Some apps let you choose the path during restore. Also check for additional accounts: many wallets support Account 2, 3, and so on under the same seed, and an empty Account 1 says nothing about the others.</p>
+<h2>Cause 4: the restore itself</h2>
+<p>A wallet that is still syncing can show zero until it catches up — give it time on a good connection. And confirm you restored into the same kind of wallet you had: a seed restored into a different coin's wallet (Bitcoin Cash, for example) shows that coin's empty addresses, not your Bitcoin.</p>
+<h2>What not to do at this moment</h2>
+<ul>
+<li><b>Never type your seed phrase into a website</b> — not a "validator," not a "sync tool," not a chat window. That is the exact moment scammers design for, and it is how restored wallets get emptied.</li>
+<li><b>Don't pay anyone to "fix the sync" or "restore the balance."</b> There is no such service; the fix is a setting, not a payment.</li>
+<li><b>Don't keep creating new wallets or moving files around.</b> Write down what you tried, in order. Methodical beats frantic, and your notes are evidence if you ask for help.</li>
+</ul>
+<h2>How an investigation helps here</h2>
+<p>Before wrestling settings blindly, it helps to know the target: which of your addresses actually hold Bitcoin, and how much. If you have any address from the period, a Wallet Report ($4.99) documents exactly what the blockchain shows for it — so instead of guessing whether the coins exist, you know what the restored wallet needs to find. And the free assessment will say plainly if there is nothing on-chain to aim at.</p>
+""",
+        "faq": [
+            ("My seed phrase is definitely correct. How can the balance be zero?",
+             "Because the words are only part of the address calculation. A passphrase (25th word), a different address type, or a different derivation path all produce a different, empty set of addresses from the same correct words. Correct words plus the wrong settings equals a convincing zero."),
+            ("Can I check whether my Bitcoin exists without fixing the wallet first?",
+             "Yes — the blockchain record is public. Any address you used can be checked directly: if it shows a balance, the Bitcoin exists and the problem is the wallet's view, not the coins. That is exactly what a Wallet Report ($4.99) documents in plain English."),
+            ("Someone offered to restore my balance if I share my screen or my seed phrase. Is that legitimate?",
+             "No. Nobody legitimate needs your seed phrase or a screen share to help you, and no fee can 'restore' a balance. The real fixes are settings in your own wallet app. Anyone asking for the phrase is trying to take the Bitcoin, not recover it."),
+        ],
+    },
 ]
 
 
@@ -397,3 +432,58 @@ def render_post(slug):
                          f"/guides/{slug}", body,
                          extra_head=_faq_ld(g["faq"]))
     return None
+
+
+_SCAM_CHECK_BODY = """
+<h1>Is This a Bitcoin Recovery Scam? Free Checker</h1>
+<p class="dek">Someone offering to get your Bitcoin back? Paste their message below. This checker scans it for the patterns that appear in almost every recovery scam — it runs entirely in your browser, and what you paste is never sent or stored anywhere.</p>
+<textarea id="scamText" rows="9" style="width:100%;box-sizing:border-box" placeholder="Paste the message, email, or chat you received here..."></textarea>
+<p><button class="button" onclick="checkScam()">CHECK THIS MESSAGE →</button></p>
+<div id="scamResult"></div>
+<h2>How to read the result</h2>
+<p>One critical flag — a seed-phrase ask, a private-key ask, a "release fee" — is enough on its own: stop, do not pay, do not reply. Several smaller flags together paint the same picture. And no flags is <b>not</b> proof a service is honest — new scripts appear constantly. Whoever you deal with, these never change: never share a seed phrase, private key, or wallet password; never pay a fee to "unlock" your own money; type the website address yourself instead of following a link you were sent.</p>
+<p>Read the full breakdown: <a href="/guides/bitcoin-recovery-service-scams">Bitcoin Recovery Service Scams: 9 Red Flags Before You Pay Anyone</a> — and here is <a href="/guides/when-we-refuse-your-money">when we will refuse your money</a>, so you can hold us to the same standard.</p>
+<script>
+var RULES = [
+ {re:/seed phrase|recovery phrase|mnemonic|12[- ]word|24[- ]word/i, sev:3, t:"Asks for your seed / recovery phrase", w:"No legitimate service ever needs it. Whoever holds it can take everything, instantly and irreversibly. This alone settles it."},
+ {re:/private key/i, sev:3, t:"Asks for your private key", w:"A private key is the money itself. Never share it with anyone, for any reason."},
+ {re:/release fee|unlock(ing)? fee|clearance fee|liberation fee/i, sev:3, t:"Wants a 'release' or 'unlock' fee", w:"There is no such thing. Bitcoin has no gate and no gatekeeper. This is the classic second theft, aimed at people who have already lost money once."},
+ {re:/(pay|send|deposit)[^.\\n]{0,60}(tax|verification|validation|processing fee)|(tax|verification|validation) (fee|payment|deposit)/i, sev:3, t:"Wants an upfront 'tax' or 'verification' payment", w:"Taxes are paid to a government — never to a recovery agent, and never as a condition of getting your own money back."},
+ {re:/guarantee[ds]?[^.\\n]{0,40}(recover|success|return)|100\\s?%[^.\\n]{0,30}(recover|success|guaranteed)/i, sev:2, t:"Guarantees recovery", w:"Nobody can. Whether Bitcoin is reachable depends entirely on what survived — a file, an account, a backup. A guarantee is a sales weapon, not a fact."},
+ {re:/wallet\\.dat|upload your wallet|send (us )?your wallet file|share your screen|anydesk|teamviewer|remote access/i, sev:2, t:"Wants your wallet file or screen access", w:"Handing over a wallet file or your screen gives a stranger everything they need. Legitimate help never starts this way."},
+ {re:/telegram|whatsapp|signal app|dm me|message me on/i, sev:1, t:"Operates through chat apps and DMs", w:"Legitimate firms have a real website, a business identity, and paperwork. Recovery scammers live in DMs because the accounts are disposable."},
+ {re:/act now|urgent(ly)?|immediately|within (24|48) hours|offer expires|last chance/i, sev:1, t:"Pressure and urgency", w:"Urgency exists to stop you checking. A real investigation takes the same steps next week as today."},
+ {re:/\\b(1|3|bc1)[a-zA-HJ-NP-Za-km-z0-9]{25,39}\\b/, sev:1, t:"Includes a raw Bitcoin address to pay", w:"Payment to a raw address has no refunds and no way back. Our only payment route is card checkout on lostbitcoin.org — anyone asking you to pay in Bitcoin is not us."},
+ {re:/fbi|interpol|europol|police|government (agent|agency)|official recovery (team|unit)/i, sev:1, t:"Claims official authority", w:"Law enforcement does not message people offering recovery, and never charges a fee to return property."},
+ {re:/double your|guaranteed profit|investment opportunit|returns of \\d+\\s?%/i, sev:1, t:"Promises investment returns", w:"That is not recovery at all — it is an investment scam wearing a recovery costume."}
+];
+function checkScam(){
+  var text = document.getElementById('scamText').value || '';
+  var out = document.getElementById('scamResult');
+  if(text.trim().length < 10){ out.innerHTML = '<div class="warn"><p>Paste the full message first — a few words is not enough to check.</p></div>'; return; }
+  var hits = [], score = 0, critical = false;
+  for(var i=0;i<RULES.length;i++){ if(RULES[i].re.test(text)){ hits.push(RULES[i]); score += RULES[i].sev; if(RULES[i].sev>=3) critical = true; } }
+  var html = '';
+  if(critical || score >= 4){
+    html = '<div class="warn"><p><b>This carries the marks of a recovery scam.</b> Do not pay anything, do not share any keys or phrases, and do not reply — engagement only invites the next script. If you already paid, our <a href="/guides/bitcoin-recovery-service-scams">red-flags guide</a> has a section on what to do next.</p></div>';
+  } else if(score >= 1){
+    html = '<div class="warn"><p><b>Caution — patterns worth a hard second look.</b> None of these alone proves a scam, but together they are how the scripts usually start. Verify the business independently before sending anything.</p></div>';
+  } else {
+    html = '<div class="notice"><p><b>None of the classic patterns found.</b> That is not proof a service is honest — new scripts appear constantly. Still verify them independently, and never share a seed phrase, private key, or wallet password with anyone, whatever this checker says.</p></div>';
+  }
+  if(hits.length){
+    html += '<h2>What was flagged</h2><ul>';
+    for(var j=0;j<hits.length;j++){ html += '<li><b>' + hits[j].t + '.</b> ' + hits[j].w + '</li>'; }
+    html += '</ul>';
+  }
+  out.innerHTML = html;
+}
+</script>
+"""
+
+
+def render_scam_check():
+    return _page(
+        "Is This a Bitcoin Recovery Scam? Free Checker",
+        "Paste a message from anyone offering to recover your Bitcoin. Free checker scans for the classic recovery-scam patterns — seed-phrase asks, release fees, guaranteed recovery. Runs in your browser; nothing is sent or stored.",
+        "/scam-check", _SCAM_CHECK_BODY + _CTA)
