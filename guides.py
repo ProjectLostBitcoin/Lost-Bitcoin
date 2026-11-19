@@ -396,6 +396,38 @@ GUIDES = [
              "No. Nobody legitimate needs your seed phrase or a screen share to help you, and no fee can 'restore' a balance. The real fixes are settings in your own wallet app. Anyone asking for the phrase is trying to take the Bitcoin, not recover it."),
         ],
     },
+    {
+        "slug": "shakepay-find-your-bitcoin-address",
+        "title": "Bought Bitcoin on Shakepay? How to Find an Address That's Actually Yours",
+        "description": "The address in Shakepay's 'Add Funds' screen belongs to Shakepay, not you — checking it shows their activity, not yours. Where your own address actually is: in a past send.",
+        "dek": "You bought and sold Bitcoin on Shakepay over the years, and now you want to see your history. So you open the app, find a Bitcoin address, and check it — and it shows millions moving, or nothing at all. Neither result is about you. Here is why, and where your address really is.",
+        "body": """
+<h2>The trap: the deposit address is not yours</h2>
+<p>The address Shakepay shows you for adding funds is a <b>deposit address</b>. It belongs to Shakepay. They issue addresses to receive customer deposits, they rotate them, and the Bitcoin that arrives is pooled with everyone else's. An old one still works — which makes it look like "your" address — but checking it on the blockchain shows Shakepay's treasury activity: enormous sums that have nothing to do with your account, or a long-drained address that shows nothing. Either way, it cannot tell you what you held. This is not a Shakepay trick; every exchange works this way, including Newton, Coinsquare, Kraken, and Coinbase.</p>
+<h2>Where your address actually is: in a past send</h2>
+<p>An address becomes personally yours the moment Bitcoin moves to a wallet you control. So the address worth checking is the <b>destination of a past send out of the exchange</b> — a withdrawal to your own wallet. That address received your coins, and its blockchain record is your history: what arrived, what later moved, what is still there.</p>
+<h2>How to find it in Shakepay</h2>
+<ol>
+<li>Open the Shakepay <b>mobile app</b> — the desktop site shows less transaction detail.</li>
+<li>Tap your Bitcoin balance to open the BTC transaction history.</li>
+<li>Look for a past <b>send</b> to an external wallet (not a buy or a sell — those happened inside Shakepay and never touched the blockchain in your name).</li>
+<li>Open that transaction and follow its transaction ID, or its "view on the blockchain" link. On the blockchain record, the <b>destination address</b> is the one your coins actually moved through.</li>
+</ol>
+<p>That address is safe to share and safe to check — it is public information by design. It is also the only thing you ever need: never a seed phrase, never a password.</p>
+<h2>If you never sent Bitcoin out</h2>
+<p>Plenty of people only ever bought and sold inside the exchange. If that is you, there is no personal address to find — your history lives in Shakepay's own records, and the honest move is to download your transaction history or statements from the app. No blockchain report can show activity that never left the exchange, and anyone who says otherwise is guessing. Those records still matter: purchase confirmations and statements are exactly the kind of evidence an investigation works from.</p>
+<h2>What to do with the address once you have it</h2>
+<p>Look it up on any public block explorer, or bring it to our free assessment. A Wallet Report ($4.99) then documents the address in plain English: everything it received and sent, what it holds now, and what that does and does not prove. People are often surprised in both directions — an address they forgot turns out to have a real history, or one they worried about turns out never to have been used at all. Either way, you end up knowing, instead of wondering.</p>
+""",
+        "faq": [
+            ("Why does my Shakepay deposit address show millions of dollars?",
+             "Because it is Shakepay's address, not yours. Deposit addresses receive funds from thousands of customers into the exchange's pooled wallets. The activity is real — it just isn't your activity."),
+            ("I only bought and sold inside Shakepay. Is there an address with my history?",
+             "No — buys and sells inside an exchange are bookkeeping entries on the exchange's own ledger, not blockchain transactions in your name. Your record is Shakepay's transaction history and statements, which you can download from the app."),
+            ("Is it safe to paste my address into a checker or a report?",
+             "Yes. A Bitcoin address is public — anyone can look it up, and looking changes nothing and risks nothing. What is never safe to share is a seed phrase, a private key, or a wallet password. We will never ask for those."),
+        ],
+    },
 ]
 
 
