@@ -428,6 +428,35 @@ GUIDES = [
              "Yes. A Bitcoin address is public — anyone can look it up, and looking changes nothing and risks nothing. What is never safe to share is a seed phrase, a private key, or a wallet password. We will never ask for those."),
         ],
     },
+    {
+        "slug": "bought-bitcoin-years-ago-where-to-start",
+        "title": "Bought Bitcoin Years Ago and Don't Know Where to Start? Start Here",
+        "description": "Bought Bitcoin years ago and don't know where to start? Nothing is urgent — and you don't need to know how Bitcoin works. The calm, plain-English first steps: old email, statements, and devices.",
+        "dek": "You bought some Bitcoin years ago — on a computer that's long retired, or through a company you can barely remember — and now you're not sure where it went, or even whether you still have it. That lost feeling is completely normal, and nothing about this is urgent today. Here is the calm way to start.",
+        "body": """
+<h2>First: nothing is urgent today</h2>
+<p>If you bought Bitcoin years ago and now feel lost, you are in good company — and you are not behind. Bitcoin has no expiry date, no deadline, and no account that closes because you took your time. Nothing on this page needs to happen today, and nothing needs to happen in a hurry. In fact, hurrying is the one thing to avoid: the people who want you to act fast are almost never trying to help you. Anyone who says "act now or it's gone forever" is trying to frighten you into a mistake. Take your time. A slow, careful search beats a fast, panicked one every time.</p>
+<h2>The three evidence piles</h2>
+<p>Almost every old Bitcoin purchase left a trail, and that trail lives in one of three places. You don't need to know how Bitcoin works to search them — you're just looking for paperwork.</p>
+<ul>
+<li><b>Your old email.</b> Search every mailbox you've ever had — including ones you rarely open — for the names of exchanges (Coinbase, Kraken, QuadrigaCX, Coinsquare, Newton, Shakepay) and for words like "purchase confirmation" and "withdrawal." One confirmation email can carry the date, the amount, and sometimes even the address.</li>
+<li><b>Bank and credit card statements.</b> A transfer to an exchange names the company and the exact date, even years later. Even a small amount — $50 or $100 — is a confirmed starting point.</li>
+<li><b>Old devices.</b> A retired laptop, an old phone, a drawer with a USB stick. A wallet app, a browser still signed in, or a file called wallet.dat may be sitting there. Look — but don't change anything yet.</li>
+</ul>
+<h2>Preserve everything before you tidy anything</h2>
+<p>This is the rule that matters most: <b>don't wipe, reset, or throw away anything before it's been checked.</b> Don't delete old email, don't run a cleanup on an old laptop, and don't recycle a device that might hold a wallet. Tidying up is how trails get destroyed — and there is no undo. Family can absolutely help you search the records: a son, daughter, or grandchild can go through email and statements with you, and that's a fine way to start. But your seed phrase and your passwords are different — those stay private, even from family. Never photograph them, never email them, never type them into any website, and never read them out to anyone who calls or messages you. No legitimate helper will ever need them.</p>
+<h2>What the free assessment does</h2>
+<p>Think of our free assessment as the structured version of this very search: you tell us what you found — an old email, a statement, a device, an address — and we check it against the public blockchain record and tell you, in plain English, what is confirmed, what is a strong possibility, what is a possible lead, and what is honestly unknown. A full Investigation Report ($9.99) is only offered when a credible lead is found. A Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents what a single address shows. The $6.99 AI-guided walkthrough is a guided tour of your next steps — again, only when there is a real lead to walk through. Nothing here is guaranteed, and if the honest answer is "we can't find anything," that answer comes from the free assessment, not from a purchase.</p>
+""",
+        "faq": [
+            ("I don't remember if I actually bought Bitcoin or only thought about it. Can anyone check?",
+             "No one can look you up by name — there is no registry of Bitcoin owners. But a purchase almost always left a trail: an old email, a bank transfer, a tax record. The free assessment follows that trail, and if nothing turns up, it says so plainly. 'We checked, and there's nothing here' is a real answer."),
+            ("My family wants to help me look. Is that safe?",
+             "Yes — for records. A family member searching old email and statements with you is a good start, and two pairs of eyes find more than one. Just keep your seed phrase and passwords private, even from family. Those are never shared, photographed, or typed into a website — by anyone, for any reason."),
+            ("I found an old laptop. Should I turn it on?",
+             "Yes — just turn it on and look. Note what you see: wallet programs, email accounts, saved logins. Don't wipe it, update it, or run any cleanup first, and don't let anyone remote into it. If you find a Bitcoin address anywhere, write it down — it can be checked safely against the public blockchain without touching the laptop again."),
+        ],
+    },
 ]
 
 
