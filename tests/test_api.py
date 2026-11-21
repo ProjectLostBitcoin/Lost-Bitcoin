@@ -141,6 +141,27 @@ class TestApi(unittest.TestCase):
             self.assertEqual(r.status, 200)
         self.assertEqual(read_stats()["total_views"], before)
 
+    def test_event_counters(self):
+        import urllib.request as u
+        def read_stats():
+            req = u.Request(self.base + "/api/stats")
+            req.add_header("X-Stats-Key", "test-secret")
+            with u.urlopen(req, timeout=10) as r:
+                return json.loads(r.read().decode())
+        before = read_stats()["events"]["totals"].get("assessment_started", 0)
+        status, data = call(self.base, "POST", "/api/start", {
+            "name": "Event Person", "email": "events@example.com",
+            "starting_point": "bitcoin_address", "consent": True})
+        self.assertEqual(status, 200)
+        token, inv = data["token"], data["investigation_id"]
+        status, _ = call(self.base, "POST", "/api/address",
+                         {"investigation_id": inv, "address": GENESIS,
+                          "label": ""}, token=token)
+        self.assertEqual(status, 200)
+        after = read_stats()["events"]["totals"]
+        self.assertEqual(after.get("assessment_started", 0), before + 1)
+        self.assertGreaterEqual(after.get("address_checked", 0), 1)
+
     def test_health_and_pricing(self):
         status, data = call(self.base, "GET", "/api/health")
         self.assertEqual((status, data["status"]), (200, "ok"))
