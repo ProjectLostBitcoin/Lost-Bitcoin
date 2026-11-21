@@ -457,6 +457,30 @@ GUIDES = [
              "Yes — just turn it on and look. Note what you see: wallet programs, email accounts, saved logins. Don't wipe it, update it, or run any cleanup first, and don't let anyone remote into it. If you find a Bitcoin address anywhere, write it down — it can be checked safely against the public blockchain without touching the laptop again."),
         ],
     },
+    {
+        "slug": "bitcoin-purchase-confirmation-email",
+        "title": "That Old Purchase Confirmation Email Is Evidence — Keep It",
+        "description": "An old Bitcoin purchase confirmation email can carry the exchange, the date, the amount — sometimes even the address your coins went to. How to search for it, save it, and use it as evidence.",
+        "dek": "That email from years ago you never deleted — the one confirming you bought Bitcoin — is worth more than you think. It is not just a memory. It is dated, written evidence of what happened, and it is often the single piece of paper that gets an investigation started.",
+        "body": """
+<h2>What a purchase confirmation actually contains</h2>
+<p>When you bought Bitcoin through an exchange, the exchange emailed you a receipt. That receipt usually names the <b>exchange</b>, the <b>date</b> and the <b>amount</b> you bought — and sometimes more: a transaction ID, an order number, or the address the coins were withdrawn to. Each of those details is a fact an investigation can check against the public blockchain record, instead of relying on memory. Even a small purchase matters: a $50 buy in 2017 is a confirmed starting point, and the date alone can narrow a search from "sometime years ago" to a single week.</p>
+<h2>How to search your old mailboxes</h2>
+<p>Search every mailbox you have ever had — including ones you rarely open, old work accounts, and the inbox you used before your current one. Try the exchange names first: <b>Coinbase, Kraken, QuadrigaCX, Coinsquare, Mt. Gox</b>. Then try the phrases exchanges used in their subject lines: <b>"purchase confirmation"</b>, <b>"withdrawal"</b>, <b>"deposit"</b>, and <b>"order complete"</b>. Search your bank statements for the same company names too — a transfer to an exchange confirms the date and the amount even when the email is gone. Go slowly, and check the spam and trash folders as well; old receipts often ended up there.</p>
+<h2>Save it before you share it</h2>
+<p>When you find one, <b>save or print a copy right away</b> — a PDF, a screenshot, a printout in a folder. Then leave the original where it is. Do not forward the original email to strangers, and never send it to anyone who messages you offering to "recover" your Bitcoin. Genuine helpers never need your email forwarded to them, and "recovery" accounts that slide into your DMs are almost always scams. An email is safe to show to a service you have chosen yourself, on a website you typed in yourself — and nothing more.</p>
+<h2>What one email can — and can't — do</h2>
+<p>One confirmation email anchors an investigation: it fixes the date, the exchange, and the amount, and sometimes it points straight at the address your coins moved to. From there, the public blockchain record can be checked — what arrived, what later moved, what is still there — and each finding is classified honestly: <b>CONFIRMED</b>, <b>STRONG POSSIBILITY</b>, <b>POSSIBLE LEAD</b>, or <b>UNKNOWN</b>. What an email cannot do is give you access. It proves the story; it is not the keys, and it does not open a wallet. That is exactly why it is the starting point, not the ending — and why it is worth keeping. Bring what you found to our free assessment, and we will tell you, in plain English, what it proves and what the next step is. A full Investigation Report ($9.99) is only offered when a credible lead is found; a Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents what a single address shows; and the $6.99 AI-guided walkthrough talks you through the next steps. Nothing here is guaranteed — but an email you already have is a better place to start than most people realise.</p>
+""",
+        "faq": [
+            ("I deleted my old email account. Is the trail gone?",
+             "Not necessarily. Your bank or credit card statements still show transfers to exchanges, and those confirm the date and the amount. The exchange itself may also still hold your account records — try logging in, or use its account-recovery process. And check any other mailbox you ever had: the confirmation may be sitting in an inbox you forgot about."),
+            ("The email has a transaction ID. Does that mean I can get the Bitcoin back?",
+             "No — a transaction ID proves the purchase happened and lets anyone check the public blockchain record to see where the coins went. But it is not a password and it does not unlock a wallet. It is evidence, and good evidence, but access still depends on having the wallet, the login, or the recovery words."),
+            ("Someone messaged me saying they found my purchase and can recover it. Is that real?",
+             "Almost certainly not. Nobody can find your purchase for you — there is no registry of Bitcoin owners — and no legitimate service contacts you out of the blue. Anyone who messages you first, asks you to forward the email, or asks for a seed phrase, a private key, or a wallet password is trying to take what you have left. Do not reply, and do not send them anything."),
+        ],
+    },
 ]
 
 
