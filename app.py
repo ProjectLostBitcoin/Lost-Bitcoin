@@ -122,9 +122,30 @@ def _record_view(path, referrer_host, utm_source):
         pass
 
 
+def _record_event(event):
+    """Count one anonymous product event (no personal data, ever)."""
+    try:
+        day = time.strftime("%Y-%m-%d", time.gmtime())
+        with _STATS_LOCK:
+            conn = sqlite3.connect(_stats_path(), timeout=5)
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS events("
+                "day TEXT, event TEXT, n INTEGER,"
+                " PRIMARY KEY(day, event))")
+            conn.execute(
+                "INSERT INTO events VALUES (?,?,1)"
+                " ON CONFLICT(day, event) DO UPDATE SET n = n + 1",
+                (day, event))
+            conn.commit()
+            conn.close()
+    except Exception:
+        pass
+
+
 def _stats_summary():
     summary = {"total_views": 0, "today_views": 0, "by_day": [],
-               "top_paths": [], "top_referrers": [], "utm_sources": []}
+               "top_paths": [], "top_referrers": [], "utm_sources": [],
+               "events": {"totals": {}, "today": {}}}
     try:
         conn = sqlite3.connect(f"file:{_stats_path()}?mode=ro", uri=True)
         rows = conn.execute(
@@ -132,7 +153,7 @@ def _stats_summary():
             " FROM page_views").fetchall()
         conn.close()
     except Exception:
-        return summary
+        rows = []
     today = time.strftime("%Y-%m-%d", time.gmtime())
     by_day, by_path, by_ref, by_utm = {}, {}, {}, {}
     for day, path, referrer, utm, views in rows:
@@ -152,6 +173,19 @@ def _stats_summary():
                                 sorted(by_ref.items(), key=lambda kv: -kv[1])[:10]]
     summary["utm_sources"] = [{"source": u, "views": v} for u, v in
                               sorted(by_utm.items(), key=lambda kv: -kv[1])[:10]]
+    summary["events"] = {"totals": {}, "today": {}}
+    try:
+        conn = sqlite3.connect(f"file:{_stats_path()}?mode=ro", uri=True)
+        for day, event, n in conn.execute(
+                "SELECT day, event, n FROM events").fetchall():
+            totals = summary["events"]["totals"]
+            totals[event] = totals.get(event, 0) + n
+            if day == today:
+                t = summary["events"]["today"]
+                t[event] = t.get(event, 0) + n
+        conn.close()
+    except Exception:
+        pass
     summary["webhook_diag"] = _read_webhook_diag()
     try:
         conn = record.connect_database()
@@ -568,6 +602,7 @@ class Handler(BaseHTTPRequestHandler):
                 "resumed": True,
             }
         created["token"] = issue_token(created["customer_id"])
+        _record_event("assessment_started")
         self._send_json(200, created)
 
     def _resume(self, data):
@@ -609,6 +644,7 @@ class Handler(BaseHTTPRequestHandler):
             if valuation_date:
                 record.save_answer(
                     investigation_id, "valuation_date", valuation_date)
+            _record_event("address_checked")
             self._send_json(200, {"address_id": address_id})
         elif path == "/api/run":
             if os.environ.get("LOST_BITCOIN_TEST_PROVIDER") == "1":
@@ -616,6 +652,7 @@ class Handler(BaseHTTPRequestHandler):
                     investigation_id, provider=_test_provider)
             else:
                 outcome = controller.run_investigation(investigation_id)
+            _record_event("investigation_run")
             self._send_json(200, outcome)
         elif path == "/api/report":
             required = ("wallet_report" if full["starting_point"] == "bitcoin_address"
@@ -627,6 +664,7 @@ class Handler(BaseHTTPRequestHandler):
                     "error": "This report is a paid product. Complete checkout first.",
                     "product": required, "amount_cents": amount})
             result = report_generator.generate_report(investigation_id, REPORTS_DIR)
+            _record_event("report_generated")
             self._send_json(200, {"report_id": result["report_id"], "markdown": result["markdown"]})
         elif path == "/api/checkout":
             product = str(data.get("product", ""))
