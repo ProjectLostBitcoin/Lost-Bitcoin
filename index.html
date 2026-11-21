@@ -1251,7 +1251,7 @@ function buildAddressReport(outcome) {
     });
     const n = myAddresses.length || (outcome.address_results || []).length;
     const price = n ? (4.99 + 1.99 * (n - 1)).toFixed(2) : "4.99";
-    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b> — complete on-chain history, what the pattern suggests, and the recommended next step for each address.</p><button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><div id="reportFile"></div><details class="sample-details"><summary>See what the full report adds (sample)</summary>${sampleWalletHTML()}</details><p style="margin-top:16px"><button class="button secondary" onclick="show('address')">ADD ANOTHER ADDRESS (+$1.99)</button></p></div>`;
+    html += `</div><div class="report-section"><h3>Your Wallet Report</h3><p>Full report for ${n} address(es): <b>$${price} USD</b> — complete on-chain history, what the pattern suggests, and the recommended next step for each address.</p><button class="button" id="walletBtn" onclick="buyProduct('wallet_report')">GET MY WALLET REPORT — $${price} →</button><p style="font-size:13px;margin-top:10px">This pays for a written report on the public blockchain record only — not to release or recover coins. Recovery is never guaranteed, and we never ask for seed phrases. <a href="/guides/when-we-refuse-your-money">When we will refuse your money →</a></p><div id="reportFile"></div><details class="sample-details"><summary>See what the full report adds (sample)</summary>${sampleWalletHTML()}</details><p style="margin-top:16px"><button class="button secondary" onclick="show('address')">ADD ANOTHER ADDRESS (+$1.99)</button></p></div>`;
     document.getElementById("reportContent").innerHTML = html;
     refreshPurchases();
 }
@@ -1380,7 +1380,7 @@ function buildInvestigationOfferHTML(assessment) {
             </div>
             <button class="button" id="reportBtn" onclick="buyProduct('investigation_report')">UNLOCK MY FULL REPORT →</button>
         </div>
-        <p style="font-size:13px;margin-top:14px">We only offer the paid report when a credible lead is found. It cannot prove ownership or guarantee recovery — its job is to give you the clearest evidence-based route from where you are now.</p>
+        <p style="font-size:13px;margin-top:14px">We only offer the paid report when a credible lead is found. It cannot prove ownership or guarantee recovery — its job is to give you the clearest evidence-based route from where you are now. You're paying for a written investigation only — not a fee to release, unlock or recover coins — and we will never ask for your secret words. <a href="/guides/when-we-refuse-your-money">When we will refuse your money →</a></p>
         <div id="reportFile"></div>
 
         <div class="addon-panel">
