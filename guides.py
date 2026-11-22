@@ -481,6 +481,32 @@ GUIDES = [
              "Almost certainly not. Nobody can find your purchase for you — there is no registry of Bitcoin owners — and no legitimate service contacts you out of the blue. Anyone who messages you first, asks you to forward the email, or asks for a seed phrase, a private key, or a wallet password is trying to take what you have left. Do not reply, and do not send them anything."),
         ],
     },
+    {
+        "slug": "found-hardware-wallet-pin",
+        "title": "Found a Hardware Wallet? Don't Guess the PIN",
+        "description": "Found a Ledger or Trezor in a drawer? Don't guess the PIN — a few wrong tries wipes the device. What to do instead, where the real backup is, and the scams to avoid.",
+        "dek": "You found a small USB-like device in a drawer — probably a Ledger or a Trezor — and it might hold the keys to a Bitcoin wallet. The most important thing you can do right now is nothing: don't guess the PIN, don't plug it in anywhere, and don't let anyone 'help' you with it until you know what you're holding.",
+        "body": """
+<h2>What that small device actually is</h2>
+<p>A Ledger or Trezor is a hardware wallet: a small device that holds the private keys to a Bitcoin wallet offline. The Bitcoin itself is not inside it — coins live on the blockchain. What the device holds, locked away, are the keys that control the wallet. If the keys are still inside and the backup words still exist, the Bitcoin is still reachable. If either is gone, the device is just a piece of plastic.</p>
+<h2>Why guessing the PIN is the fastest way to lose it</h2>
+<p>Do not guess the PIN. A hardware wallet is built to defend itself: after a few wrong attempts, the device wipes itself — keys and all — on purpose, so a thief cannot keep guessing. There is no safe number of tries and no way to undo a wipe. The most common way people turn a recoverable wallet into a lost one is an afternoon of guessing birthdays and old PINs. If you do not know the PIN, stop. Do not try another one.</p>
+<h2>The paper recovery sheet is the real backup</h2>
+<p>When a hardware wallet is first set up, it shows 12 or 24 words — the recovery phrase — to be written down on paper. That sheet is the real backup, and it matters more than the device. Look for it where the device was kept: the same drawer, the same safe, the same folder of important papers. It may be on the small card that came in the box, or any piece of paper with a numbered list of ordinary words. Keep it private and off screens: never photograph it, never type it into any website or app, and never read it out to anyone. The only place those words ever belong is the device manufacturer's own recovery flow, entered on the device itself.</p>
+<h2>Preserve what you found, and don't plug it in anywhere</h2>
+<p>Until you know what you have, leave it untouched. Do not plug the device into a random computer — unfamiliar software can try to talk to it the moment it is connected. Write down what you found: the device model, anything written on it, any papers or cards that came with it, and where it was kept. That record is evidence, and it is what an investigation starts from. If the device belonged to a family member who has died, the same rules apply — and only the executor should act.</p>
+<h2>What an investigation can — and cannot — do</h2>
+<p>An investigation can document what you found, identify the device and the wallet it likely controlled, check any addresses you can find against the public blockchain, and guide you through the safe next steps — each finding classified honestly as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. What it cannot do is bypass a PIN, and nobody can: the device is designed so that is impossible. Anyone who claims they can — for a fee, by remote access, or with a special tool — is a scammer. Bring what you found to our free assessment, and we will tell you, in plain English, what is known and what the next step is. A full Investigation Report ($9.99) is only offered when a credible lead is found; a Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents what a single address shows; and the $6.99 AI-guided walkthrough talks you through the next steps. Nothing here is guaranteed — but a device left untouched is a far better starting point than a device that has been guessed at.</p>
+""",
+        "faq": [
+            ("I already tried a few PIN guesses. Is it too late?",
+             "Not necessarily — but stop now. Each wrong guess brings the device closer to wiping itself, and you cannot see how many tries are left. Write down the guesses you already tried so you don't repeat them, put the device away, and get guidance before you touch it again. The recovery words, if they exist, are what matter now — not the PIN."),
+            ("I found the recovery words. Can I type them into a website to get the Bitcoin back?",
+             "No — never type your recovery words into any website or app. The only safe place for them is the device manufacturer's own recovery flow, entered on the device itself (or on a brand-new device bought from the manufacturer). Any website, app, or person asking for the words is trying to steal the wallet. If you have the words, you have the key — protect them like cash."),
+            ("Someone says they can unlock the device for a fee. Is that real?",
+             "No. Nobody can bypass a hardware wallet PIN — the device is built so that after a few wrong attempts it erases itself, and there is no back door. Anyone who offers to unlock it for a fee, by remote access, or with special software is a scammer. The only real routes are the correct PIN or the recovery words, entered on the device itself."),
+        ],
+    },
 ]
 
 

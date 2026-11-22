@@ -479,6 +479,7 @@ class Handler(BaseHTTPRequestHandler):
                     "- Bought Bitcoin on Shakepay? Find an address that's actually yours: https://lostbitcoin.org/guides/shakepay-find-your-bitcoin-address\n"
                     "- Bought Bitcoin years ago — where to start: https://lostbitcoin.org/guides/bought-bitcoin-years-ago-where-to-start\n"
                     "- That old purchase confirmation email is evidence: https://lostbitcoin.org/guides/bitcoin-purchase-confirmation-email\n"
+                    "- Found a hardware wallet? Don't guess the PIN: https://lostbitcoin.org/guides/found-hardware-wallet-pin\n"
                     "## Tools\n"
                     "- Is this a Bitcoin recovery scam? Free checker: https://lostbitcoin.org/scam-check\n\n"
                     "## Contact\n"
@@ -539,6 +540,8 @@ class Handler(BaseHTTPRequestHandler):
             data = self._read_json()
             if parsed.path == "/api/start":
                 self._start(data)
+            elif parsed.path == "/api/event":
+                self._click_event(data)
             elif parsed.path == "/api/resume":
                 self._resume(data)
             elif parsed.path in ("/api/answer", "/api/address", "/api/run", "/api/report",
@@ -577,6 +580,19 @@ class Handler(BaseHTTPRequestHandler):
         self._send_json(200, {"received": True})
 
     # -- endpoints
+    def _click_event(self, data):
+        """Anonymous click counter (hero buttons only). No personal data:
+        the request body carries just an event name and a button kind, and
+        nothing else is read or stored. Lets us tell a hero click apart
+        from completing the name/email/consent gate that /api/start is."""
+        allowed = {"hero_click"}
+        event = str(data.get("event", ""))
+        kind = str(data.get("kind", ""))
+        if event not in allowed or kind not in ("lost_bitcoin", "bitcoin_address"):
+            return self._send_json(400, {"error": "Unknown event."})
+        _record_event(f"{event}_{kind}")
+        self._send_json(200, {"recorded": True})
+
     def _start(self, data):
         if self._throttled():
             return self._send_json(429, {"error": "Too many attempts. Please try again later."})
