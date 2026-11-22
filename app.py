@@ -15,6 +15,14 @@ Env:  LOST_BITCOIN_DB           database file path
                                 set 0.0.0.0 when deployed)
       PORT                      listen port (default 8765)
 
+Assessment flow (founder decision, 2026-11-22): the name/email/
+consent form sits at the END of the assessment, not the start.
+POST /api/start with {"anonymous": true} creates an investigation
+under a placeholder customer (no name/email) and returns the usual
+signed token for it; POST /api/claim then collects name, email and
+consent and ties the record to the real customer. Anonymous records
+can answer questions and run the free checks, but cannot purchase.
+
 Customer resume (private-beta design): /api/start and /api/resume
 return a signed, expiring resume token for the customer's own record.
 The browser stores it and presents it on later calls, so a customer
@@ -540,6 +548,8 @@ class Handler(BaseHTTPRequestHandler):
             data = self._read_json()
             if parsed.path == "/api/start":
                 self._start(data)
+            elif parsed.path == "/api/claim":
+                self._claim(data)
             elif parsed.path == "/api/event":
                 self._click_event(data)
             elif parsed.path == "/api/resume":
@@ -596,6 +606,19 @@ class Handler(BaseHTTPRequestHandler):
     def _start(self, data):
         if self._throttled():
             return self._send_json(429, {"error": "Too many attempts. Please try again later."})
+        if data.get("anonymous") is True:
+            # Questions first (founder decision, 2026-11-22): the
+            # name/email/consent form moved to the END of the flow.
+            # An anonymous investigation lives under a placeholder
+            # customer with no name/email; the signed token below is
+            # what keeps strangers out of it until /api/claim ties it
+            # to a real customer. Anonymous records cannot purchase.
+            created = record.create_anonymous_investigation(
+                data.get("starting_point", "lost_bitcoin"))
+            created["resumed"] = False
+            created["token"] = issue_token(created["customer_id"])
+            _record_event("assessment_started")
+            return self._send_json(200, created)
         name = str(data.get("name", "")).strip()
         email = str(data.get("email", "")).strip()
         starting_point = data.get("starting_point", "lost_bitcoin")
@@ -621,6 +644,39 @@ class Handler(BaseHTTPRequestHandler):
         created["token"] = issue_token(created["customer_id"])
         _record_event("assessment_started")
         self._send_json(200, created)
+
+    def _claim(self, data):
+        """Save step: tie an anonymous investigation to a real customer.
+
+        Requires the anonymous token (so only the browser that answered
+        the questions can claim them), a name, an email, and consent —
+        the same consent gate /api/start has enforced since 2026-11-17,
+        now collected at the end of the flow instead of the start.
+        """
+        if self._throttled():
+            return self._send_json(429, {"error": "Too many attempts. Please try again later."})
+        investigation_id = str(data.get("investigation_id", ""))
+        full, error = self._authorized_investigation(investigation_id)
+        if error:
+            return self._send_json(*error)
+        if full["customer"]["email"] is not None:
+            return self._send_json(400, {
+                "error": "This investigation is already saved."})
+        if data.get("consent") is not True:
+            return self._send_json(400, {
+                "error": "Please tick the consent box so we can save "
+                         "your investigation."})
+        try:
+            claimed = record.claim_investigation(
+                investigation_id,
+                str(data.get("name", "")),
+                str(data.get("email", "")))
+        except ValueError as claim_error:
+            return self._send_json(400, {"error": str(claim_error)})
+        claimed["token"] = issue_token(claimed["customer_id"])
+        claimed["anonymous"] = False
+        _record_event("investigation_claimed")
+        self._send_json(200, claimed)
 
     def _resume(self, data):
         if self._throttled():
@@ -684,6 +740,13 @@ class Handler(BaseHTTPRequestHandler):
             _record_event("report_generated")
             self._send_json(200, {"report_id": result["report_id"], "markdown": result["markdown"]})
         elif path == "/api/checkout":
+            if full["customer"]["email"] is None:
+                # Anonymous (unclaimed) records can look, but not buy:
+                # a purchase needs a saved customer to belong to.
+                return self._send_json(403, {
+                    "error": "Save your investigation with your name and "
+                             "email first — a purchase has to belong to a "
+                             "saved record."})
             product = str(data.get("product", ""))
             # Eligibility is enforced here, not just in the page: a paid
             # report is only sold for the flow it belongs to, and only
@@ -723,6 +786,11 @@ class Handler(BaseHTTPRequestHandler):
             checkout["product"] = product
             self._send_json(200, checkout)
         elif path == "/api/demo-pay":
+            if full["customer"]["email"] is None:
+                return self._send_json(403, {
+                    "error": "Save your investigation with your name and "
+                             "email first — a purchase has to belong to a "
+                             "saved record."})
             purchase_id = payments.complete_demo_payment(
                 str(data.get("demo_token", "")), full["customer"]["customer_id"])
             self._send_json(200, {"purchase_id": purchase_id})

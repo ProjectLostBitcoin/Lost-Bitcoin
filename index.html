@@ -680,16 +680,17 @@ footer {
 
 </section>
 
-<!-- START: name + email -->
+<!-- SAVE: name + email, collected at the END of the assessment -->
 
 <section class="card hidden" id="start">
-    <div class="eyebrow" id="startEyebrow">Start your investigation</div>
-    <h1>A couple of details first.</h1>
-    <p id="startBlurb">So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.</p>
+    <div class="eyebrow" id="startEyebrow">Save your investigation</div>
+    <h1 id="startTitle">One last step: save your work.</h1>
+    <p id="startBlurb">You've done the hard part — now let's make sure you don't lose it. We ask for your name and email for one reason only: so this investigation is saved under <b>you</b>. Your answers, your results and any report you buy are all tied to this record. Once it's saved, you can close this page, come back days later on any device, and pick up exactly where you left off — and if you buy a report, this is how we know it's yours. <b>Without it, everything you've entered disappears when this tab closes.</b></p>
+    <p>We never ask for seed phrases, private keys or wallet passwords — ever. Anyone who does is trying to steal your Bitcoin.</p>
     <input id="startName" type="text" placeholder="Your name">
     <input id="startEmail" type="email" placeholder="Your email address">
     <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin:12px 0;text-align:left"><input id="startConsent" type="checkbox" style="margin-top:2px"> <span>I agree to the <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms" target="_blank" rel="noopener">Terms of Service</a>.</span></label>
-    <button class="button" onclick="beginInvestigation()">CONTINUE →</button>
+    <button class="button" onclick="saveAndContinue()">SAVE MY INVESTIGATION →</button>
     <p id="startMsg" style="font-size:13px"></p>
 </section>
 
@@ -974,7 +975,11 @@ function renderQuestion() {
 
     if(current>=questions.length) {
 
-        buildReport();
+        // All questions answered: save before results, so the results
+        // belong to a record the visitor can return to.
+        if (needsSave()) { showSave(() => buildReport()); }
+
+        else { buildReport(); }
 
         return;
 
@@ -1106,7 +1111,7 @@ async function submitText(key) {
 
 document.addEventListener("keydown", e => {
     if (e.key !== "Enter") return;
-    const map = { resumeEmail: () => resumeFlow(), startEmail: () => beginInvestigation(),
+    const map = { resumeEmail: () => resumeFlow(), startEmail: () => saveAndContinue(),
                   addrInput: () => submitAddress(), walkInput: () => sendWalk() };
     if (map[e.target.id]) { e.preventDefault(); map[e.target.id](); }
 });
@@ -1134,36 +1139,76 @@ async function api(path, body) {
     return data;
 }
 
-function startFlow(kind) {
+async function startFlow(kind) {
     pendingStart = kind;
-    const eb = document.getElementById("startEyebrow"), bl = document.getElementById("startBlurb");
-    if (kind === "bitcoin_address") {
-        eb.textContent = "Wallet Report";
-        bl.textContent = "So we can save your report and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.";
+    // Anonymous click counter only: tells us whether visitors reach for
+    // the hero button at all. Fire-and-forget; a failed count must
+    // never block the flow.
+    try { fetch("/api/event", { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "hero_click", kind }) }).catch(() => {}); } catch (e) {}
+    // Questions first (founder decision, 2026-11-22): no form up front.
+    // Begin an anonymous investigation and go straight in; name, email
+    // and consent are collected at the save step near the end. A
+    // session of this kind already in progress is reused as-is.
+    if (!session || session.starting_point !== kind) {
+        try {
+            const data = await api("/api/start", { anonymous: true, starting_point: kind });
+            session = data;
+            localStorage.setItem("lb_session", JSON.stringify(data));
+        } catch (e) {
+            // Offline/demo mode: the page still works locally, nothing is saved.
+            session = null;
+        }
+    }
+    if (kind === "bitcoin_address") { show("address"); }
+    else { current = 0; show("questions"); renderQuestion(); }
+}
+
+/* ---- Save step: name + email + consent, at the END of the flow ---- */
+let afterSave = null;
+
+function needsSave() { return !!(session && session.anonymous); }
+
+function showSave(next) {
+    afterSave = next || null;
+    const eb = document.getElementById("startEyebrow"), title = document.getElementById("startTitle");
+    if (((session && session.starting_point) || pendingStart) === "bitcoin_address") {
+        eb.textContent = "Save your Wallet Report";
+        title.textContent = "One last step: make this report yours.";
     } else {
-        eb.textContent = "Start your investigation";
-        bl.textContent = "So we can save your investigation and you can return to it later. We never ask for seed phrases, private keys or wallet passwords — ever.";
+        eb.textContent = "Save your investigation";
+        title.textContent = "One last step: save your work.";
     }
     show("start");
 }
 
-async function beginInvestigation() {
+async function saveAndContinue() {
     const name = document.getElementById("startName").value.trim();
     const email = document.getElementById("startEmail").value.trim();
     const msg = document.getElementById("startMsg");
     if (!name || !email) { msg.textContent = "Please add your name and email so we can save your work."; return; }
-    if (!document.getElementById("startConsent").checked) { msg.textContent = "Please tick the box agreeing to the Privacy Policy and Terms so we can start."; return; }
+    if (!document.getElementById("startConsent").checked) { msg.textContent = "Please tick the box agreeing to the Privacy Policy and Terms so we can save your investigation."; return; }
+    if (!session) { msg.textContent = "We couldn't reach the server earlier, so this session can't be saved."; return; }
     try {
-        const data = await api("/api/start", { name, email, starting_point: pendingStart, consent: true });
+        const data = await api("/api/claim", { investigation_id: session.investigation_id, name, email, consent: true });
         session = data;
         localStorage.setItem("lb_session", JSON.stringify(data));
-        if (data.starting_point === "bitcoin_address") { show("address"); }
-        else { current = 0; show("questions"); renderQuestion(); }
+        if (data.resumed) {
+            // That email already had a saved investigation of this kind:
+            // we've switched you to it (nothing was merged or overwritten).
+            const full = await api("/api/investigation?investigation_id=" + data.investigation_id);
+            Object.keys(answers).forEach(k => delete answers[k]);
+            (full.answers || []).forEach(a => { answers[a.question_key] = a.answer_value; });
+            myAddresses.length = 0;
+            (full.addresses || []).forEach(a => myAddresses.push(a.address));
+        }
+        const next = afterSave; afterSave = null;
+        if (next) { next(); }
+        else if (data.starting_point === "bitcoin_address") { show("address"); renderAddrList(); }
+        else { buildReport(); }
     } catch (e) {
-        // Offline/demo mode: the page still works locally, nothing is saved.
-        msg.textContent = "We couldn't reach the server, so this session won't be saved. (" + e.message + ")";
-        if (pendingStart === "bitcoin_address") { show("address"); }
-        else { current = 0; show("questions"); renderQuestion(); }
+        msg.textContent = e.message;
     }
 }
 
@@ -1199,7 +1244,7 @@ async function submitAddress() {
     const msg = document.getElementById("addrMsg");
     const address = input.value.trim();
     if (!address) { msg.textContent = "Please enter an address."; return; }
-    if (!session) { msg.textContent = "Please start with your name and email first so we can save this."; return; }
+    if (!session) { msg.textContent = "This session isn't connected — please refresh the page and try again."; return; }
     try {
         const vdate = document.getElementById("addrValuationDate");
         await api("/api/address", { investigation_id: session.investigation_id, address, label: label.value.trim(), valuation_date: vdate ? vdate.value : "" });
@@ -1400,7 +1445,8 @@ function buildInvestigationOfferHTML(assessment) {
 let pendingDemo = null;
 
 async function buyProduct(product) {
-    if (!session) { alert("Please start with your name and email first so we can save your purchase."); return; }
+    if (!session) { alert("This session isn't connected to the server, so purchases are unavailable right now."); return; }
+    if (needsSave()) { showSave(() => buyProduct(product)); return; }
     try {
         const co = await api("/api/checkout", { investigation_id: session.investigation_id, product });
         if (co.mode === "stripe") { window.location.href = co.url; return; }

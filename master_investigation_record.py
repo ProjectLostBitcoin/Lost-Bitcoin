@@ -404,6 +404,227 @@ def resume_customer_investigation(email, starting_point=None):
     finally:
         connection.close()
 
+def create_anonymous_investigation(starting_point="lost_bitcoin"):
+    """
+    Create an investigation with NO name or email attached.
+
+    The investigation lives under an anonymous placeholder customer
+    (a customers row whose name and email are NULL). That keeps the
+    whole ownership model unchanged: the placeholder has a normal
+    customer_id, so the signed-token machinery in app.py authorizes
+    exactly this investigation and no one else's. The record is tied
+    to a real person later by claim_investigation(); until then it
+    must not be used for purchases (enforced in app.py).
+    """
+
+    if starting_point not in ("lost_bitcoin", "bitcoin_address"):
+        raise ValueError("Invalid investigation starting point.")
+
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    try:
+        timestamp = get_timestamp()
+        customer_id = str(uuid.uuid4())
+        investigation_id = str(uuid.uuid4())
+
+        cursor.execute("""
+            INSERT INTO customers (
+                customer_id, name, email, created_at, updated_at
+            )
+            VALUES (?, NULL, NULL, ?, ?)
+        """, (customer_id, timestamp, timestamp))
+
+        cursor.execute("""
+            INSERT INTO investigations (
+                investigation_id, customer_id, starting_point,
+                status, created_at, updated_at
+            )
+            VALUES (?, ?, ?, 'active', ?, ?)
+        """, (
+            investigation_id, customer_id, starting_point,
+            timestamp, timestamp
+        ))
+
+        cursor.execute("""
+            INSERT INTO timeline_events (
+                event_id, investigation_id, event_type,
+                summary, details, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            str(uuid.uuid4()),
+            investigation_id,
+            "investigation_started",
+            "Anonymous investigation created (not yet saved to a customer).",
+            starting_point,
+            timestamp
+        ))
+
+        connection.commit()
+
+        return {
+            "customer_id": customer_id,
+            "investigation_id": investigation_id,
+            "starting_point": starting_point,
+            "anonymous": True
+        }
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
+
+
+def is_anonymous_customer(customer_id):
+    """True when the customer row is an anonymous placeholder (no email)."""
+
+    connection = connect_database()
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "SELECT email FROM customers WHERE customer_id = ?",
+            (customer_id,)
+        )
+        row = cursor.fetchone()
+        return row is not None and row[0] is None
+    finally:
+        connection.close()
+
+
+def claim_investigation(investigation_id, name, email):
+    """
+    Tie an anonymous investigation to a real customer (the save step).
+
+    Follows the same rules as create_customer / resume:
+    - Email never seen before: the placeholder customer simply becomes
+      the real customer (name/email set on the same row), so the
+      investigation — and the token already issued for it — carry on.
+    - Email exists but has no active investigation of this starting
+      point: the claimed investigation is attached to that customer as
+      its own record. The other flow's investigation is never touched
+      (the 2026-11-14 record-hijack rule).
+    - Email exists WITH an active investigation of the same starting
+      point: resume semantics, exactly like /api/start — the existing
+      investigation is returned with resumed=True and the anonymous
+      record is left unclaimed. Nothing is merged or overwritten.
+    """
+
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError("A customer name is required.")
+
+    if not isinstance(email, str):
+        raise ValueError("A valid email address is required.")
+
+    email = email.strip().lower()
+
+    email_pattern = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
+
+    if not re.match(email_pattern, email):
+        raise ValueError("Please provide a valid email address.")
+
+    name = name.strip()
+
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    try:
+        _require_investigation(cursor, investigation_id)
+
+        cursor.execute("""
+            SELECT i.customer_id, i.starting_point, c.email
+            FROM investigations i
+            JOIN customers c ON c.customer_id = i.customer_id
+            WHERE i.investigation_id = ?
+        """, (investigation_id,))
+        owner_id, starting_point, owner_email = cursor.fetchone()
+
+        if owner_email is not None:
+            raise ValueError(
+                "This investigation is already saved to a customer.")
+
+        timestamp = get_timestamp()
+
+        cursor.execute(
+            "SELECT customer_id FROM customers WHERE email = ?",
+            (email,)
+        )
+        existing = cursor.fetchone()
+
+        if existing is None:
+            # Adopt the placeholder: same customer_id, now a real person.
+            cursor.execute("""
+                UPDATE customers
+                SET name = ?, email = ?, updated_at = ?
+                WHERE customer_id = ?
+            """, (name, email, timestamp, owner_id))
+            customer_id = owner_id
+            resumed = False
+        else:
+            customer_id = existing[0]
+            cursor.execute("""
+                SELECT investigation_id FROM investigations
+                WHERE customer_id = ?
+                  AND starting_point = ?
+                  AND status = 'active'
+                ORDER BY updated_at DESC, created_at DESC
+                LIMIT 1
+            """, (customer_id, starting_point))
+            same_flow = cursor.fetchone()
+            if same_flow:
+                # Resume semantics: hand back the existing record; the
+                # anonymous one stays unclaimed and untouched.
+                connection.commit()
+                return {
+                    "customer_id": customer_id,
+                    "investigation_id": same_flow[0],
+                    "starting_point": starting_point,
+                    "resumed": True
+                }
+            # Attach the claimed investigation to the real customer and
+            # drop the now-empty placeholder row.
+            cursor.execute("""
+                UPDATE investigations
+                SET customer_id = ?, updated_at = ?
+                WHERE investigation_id = ?
+            """, (customer_id, timestamp, investigation_id))
+            cursor.execute(
+                "DELETE FROM customers WHERE customer_id = ?",
+                (owner_id,))
+            resumed = False
+
+        cursor.execute("""
+            INSERT INTO timeline_events (
+                event_id, investigation_id, event_type,
+                summary, details, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            str(uuid.uuid4()),
+            investigation_id,
+            "investigation_claimed",
+            "Investigation saved to the customer (name and email provided).",
+            email,
+            timestamp
+        ))
+
+        connection.commit()
+
+        return {
+            "customer_id": customer_id,
+            "investigation_id": investigation_id,
+            "starting_point": starting_point,
+            "resumed": resumed
+        }
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
+
+
 def save_answer(investigation_id, question_key, answer_value, source="customer"):
     """
     Save an answer to an investigation.
