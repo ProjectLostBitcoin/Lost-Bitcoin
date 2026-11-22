@@ -162,6 +162,28 @@ class TestApi(unittest.TestCase):
         self.assertEqual(after.get("assessment_started", 0), before + 1)
         self.assertGreaterEqual(after.get("address_checked", 0), 1)
 
+    def test_hero_click_event(self):
+        import urllib.request as u
+        def read_stats():
+            req = u.Request(self.base + "/api/stats")
+            req.add_header("X-Stats-Key", "test-secret")
+            with u.urlopen(req, timeout=10) as r:
+                return json.loads(r.read().decode())
+        before = read_stats()["events"]["totals"].get("hero_click_lost_bitcoin", 0)
+        status, data = call(self.base, "POST", "/api/event",
+                            {"event": "hero_click", "kind": "lost_bitcoin"})
+        self.assertEqual(status, 200)
+        self.assertTrue(data.get("recorded"))
+        after = read_stats()["events"]["totals"]
+        self.assertEqual(after.get("hero_click_lost_bitcoin", 0), before + 1)
+        # Unknown events are refused and record nothing.
+        status, _ = call(self.base, "POST", "/api/event",
+                         {"event": "purchase", "kind": "lost_bitcoin"})
+        self.assertEqual(status, 400)
+        self.assertEqual(
+            read_stats()["events"]["totals"].get("hero_click_lost_bitcoin", 0),
+            before + 1)
+
     def test_health_and_pricing(self):
         status, data = call(self.base, "GET", "/api/health")
         self.assertEqual((status, data["status"]), (200, "ok"))
@@ -389,6 +411,156 @@ class TestApi(unittest.TestCase):
                             {"investigation_id": inv, "product": "wallet_report"}, tok)
         self.assertEqual(status, 400)
         self.assertIn("Investigation Report", data["error"])
+
+    def start_anonymous(self, starting="lost_bitcoin"):
+        status, data = call(self.base, "POST", "/api/start",
+                            {"anonymous": True, "starting_point": starting})
+        self.assertEqual(status, 200, data)
+        self.assertTrue(data["anonymous"])
+        self.assertIn("token", data)
+        return data
+
+    def test_anonymous_flow_claim_then_purchase(self):
+        s = self.start_anonymous()
+        inv, tok = s["investigation_id"], s["token"]
+        # Answers save against the anonymous record with its token.
+        status, _ = call(self.base, "POST", "/api/answer",
+                         {"investigation_id": inv, "question_key": "device",
+                          "answer_value": "Yes"}, tok)
+        self.assertEqual(status, 200)
+        # Anonymous records cannot buy, and reports stay purchase-gated.
+        status, data = call(self.base, "POST", "/api/checkout",
+                            {"investigation_id": inv,
+                             "product": "investigation_report"}, tok)
+        self.assertEqual(status, 403)
+        self.assertIn("Save your investigation", data["error"])
+        status, _ = call(self.base, "POST", "/api/report",
+                         {"investigation_id": inv}, tok)
+        self.assertEqual(status, 402)
+        # Claim without consent is refused, same gate as /api/start.
+        status, data = call(self.base, "POST", "/api/claim",
+                            {"investigation_id": inv, "name": "Anon Person",
+                             "email": "anon@example.com"}, tok)
+        self.assertEqual(status, 400)
+        self.assertIn("consent", data["error"])
+        # Claim with consent: the record becomes the customer's own.
+        status, claimed = call(self.base, "POST", "/api/claim",
+                               {"investigation_id": inv, "name": "Anon Person",
+                                "email": "anon@example.com", "consent": True}, tok)
+        self.assertEqual(status, 200, claimed)
+        self.assertFalse(claimed["resumed"])
+        self.assertFalse(claimed["anonymous"])
+        self.assertEqual(claimed["investigation_id"], inv)
+        self.assertEqual(claimed["customer_id"], s["customer_id"])
+        # The pre-claim token still works (same customer), and so does
+        # the token returned by the claim.
+        for t in (tok, claimed["token"]):
+            status, full = call(self.base, "GET",
+                                f"/api/investigation?investigation_id={inv}", token=t)
+            self.assertEqual(status, 200)
+            self.assertEqual(full["customer"]["email"], "anon@example.com")
+        # From here the paid flow works exactly as for a named start.
+        tok = claimed["token"]
+        status, out = call(self.base, "POST", "/api/run",
+                           {"investigation_id": inv}, tok)
+        self.assertEqual(status, 200)
+        self.assertTrue(out["assessment"]["credible_lead"])
+        status, co = call(self.base, "POST", "/api/checkout",
+                          {"investigation_id": inv,
+                           "product": "investigation_report"}, tok)
+        self.assertEqual((status, co["mode"], co["amount_cents"]), (200, "demo", 999))
+        status, _ = call(self.base, "POST", "/api/demo-pay",
+                         {"investigation_id": inv, "demo_token": co["demo_token"]}, tok)
+        self.assertEqual(status, 200)
+        status, rep = call(self.base, "POST", "/api/report",
+                           {"investigation_id": inv}, tok)
+        self.assertEqual(status, 200)
+        self.assertIn("Investigation Report", rep["markdown"])
+        # A claimed record cannot be claimed again.
+        status, _ = call(self.base, "POST", "/api/claim",
+                         {"investigation_id": inv, "name": "Second",
+                          "email": "second@example.com", "consent": True}, tok)
+        self.assertEqual(status, 400)
+
+    def test_anonymous_stranger_cannot_read_or_claim(self):
+        mine = self.start_anonymous()
+        other = self.start_anonymous()
+        inv, otok = mine["investigation_id"], other["token"]
+        status, _ = call(self.base, "GET",
+                         f"/api/investigation?investigation_id={inv}", token=otok)
+        self.assertEqual(status, 403)
+        status, _ = call(self.base, "POST", "/api/answer",
+                         {"investigation_id": inv, "question_key": "device",
+                          "answer_value": "Yes"}, otok)
+        self.assertEqual(status, 403)
+        status, _ = call(self.base, "POST", "/api/claim",
+                         {"investigation_id": inv, "name": "Stranger",
+                          "email": "stranger@example.com", "consent": True}, otok)
+        self.assertEqual(status, 403)
+        status, _ = call(self.base, "POST", "/api/claim",
+                         {"investigation_id": inv, "name": "No Token",
+                          "email": "notoken@example.com", "consent": True})
+        self.assertEqual(status, 401)
+        # The rightful anonymous owner is unaffected by the attempts.
+        status, full = call(self.base, "GET",
+                            f"/api/investigation?investigation_id={inv}",
+                            token=mine["token"])
+        self.assertEqual(status, 200)
+        self.assertIsNone(full["customer"]["email"])
+
+    def test_claim_attaches_to_existing_customer_of_other_flow(self):
+        # The 2026-11-14 hijack rule, applied to claiming: an email that
+        # owns a lost-Bitcoin investigation claims an anonymous Wallet
+        # Report investigation — it attaches as its own record and the
+        # lost-Bitcoin record is never touched.
+        named = self.start_customer("attach@example.com", "lost_bitcoin")
+        anon = self.start_anonymous("bitcoin_address")
+        inv, tok = anon["investigation_id"], anon["token"]
+        status, _ = call(self.base, "POST", "/api/address",
+                         {"investigation_id": inv, "address": GENESIS}, tok)
+        self.assertEqual(status, 200)
+        status, claimed = call(self.base, "POST", "/api/claim",
+                               {"investigation_id": inv, "name": "Api Test",
+                                "email": "attach@example.com", "consent": True}, tok)
+        self.assertEqual(status, 200, claimed)
+        self.assertFalse(claimed["resumed"])
+        self.assertEqual(claimed["investigation_id"], inv)
+        self.assertEqual(claimed["customer_id"], named["customer_id"])
+        # The placeholder customer row is gone; both records are the
+        # real customer's, each under its own starting point.
+        self.assertIsNone(app.record.get_customer_record(anon["customer_id"]))
+        status, data = call(self.base, "POST", "/api/resume",
+                            {"email": "attach@example.com",
+                             "starting_point": "lost_bitcoin"})
+        self.assertEqual(data["investigation_id"], named["investigation_id"])
+        status, data = call(self.base, "POST", "/api/resume",
+                            {"email": "attach@example.com",
+                             "starting_point": "bitcoin_address"})
+        self.assertEqual(data["investigation_id"], inv)
+        # The claimed address record can now buy its Wallet Report.
+        status, co = call(self.base, "POST", "/api/checkout",
+                          {"investigation_id": inv, "product": "wallet_report"},
+                          token=claimed["token"])
+        self.assertEqual((status, co["amount_cents"]), (200, 499))
+
+    def test_claim_with_same_flow_email_resumes_existing(self):
+        # Resume semantics, exactly like /api/start: claiming with an
+        # email that already has an active investigation of the SAME
+        # starting point returns that record; the anonymous one is
+        # left unclaimed and unmerged.
+        named = self.start_customer("resumeclaim@example.com", "lost_bitcoin")
+        anon = self.start_anonymous("lost_bitcoin")
+        status, claimed = call(self.base, "POST", "/api/claim",
+                               {"investigation_id": anon["investigation_id"],
+                                "name": "Api Test",
+                                "email": "resumeclaim@example.com",
+                                "consent": True}, anon["token"])
+        self.assertEqual(status, 200, claimed)
+        self.assertTrue(claimed["resumed"])
+        self.assertEqual(claimed["investigation_id"], named["investigation_id"])
+        self.assertEqual(claimed["customer_id"], named["customer_id"])
+        full = app.record.get_complete_investigation(anon["investigation_id"])
+        self.assertIsNone(full["customer"]["email"])
 
     def test_seed_phrase_in_address_field_gets_protective_message(self):
         s = self.start_customer("seedaddr@example.com", "bitcoin_address")
