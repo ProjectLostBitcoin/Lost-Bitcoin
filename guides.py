@@ -507,6 +507,30 @@ GUIDES = [
              "No. Nobody can bypass a hardware wallet PIN — the device is built so that after a few wrong attempts it erases itself, and there is no back door. Anyone who offers to unlock it for a fee, by remote access, or with special software is a scammer. The only real routes are the correct PIN or the recovery words, entered on the device itself."),
         ],
     },
+    {
+        "slug": "why-bitcoin-assessment-is-free",
+        "title": "Why Our Bitcoin Assessment Is Free (and What It Actually Does)",
+        "description": "Our Bitcoin investigation assessment is free because many people have no credible lead — and charging them to learn that would be wrong. Here's what the free step checks, and when the $9.99 report is offered.",
+        "dek": "Most people who think they lost Bitcoin honestly don't know whether anything is recoverable. The free assessment exists to answer that first question — do you have a credible lead at all? — before anyone is asked to pay anything.",
+        "body": """
+<h2>What the free assessment actually does</h2>
+<p>The assessment takes the details you remember — an old exchange, a device, a wallet file, an address, a date — and organizes them into one investigation record. If you have a Bitcoin address, it is checked against the public blockchain: has it ever been used, what moved through it, and does it hold a balance today? Everything found is classified honestly, in plain language: CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. A balance, on its own, never proves the Bitcoin is yours or that it can be recovered — the assessment says so when that's the case.</p>
+<h2>Why it costs nothing</h2>
+<p>Because in a great many cases, the honest answer is that there is no credible lead: the address was never used, the exchange is gone with no records, the trail simply ends. Charging someone $9.99 to hear "there's nothing here" would be wrong — and it's exactly what the scam services do in reverse, taking money first and inventing hope later. The free step is the filter that protects you: we only offer the paid Investigation Report ($9.99) when the assessment finds a credible lead worth documenting. If there's no lead, you pay nothing, and you still leave knowing where you stand.</p>
+<h2>What the assessment never does</h2>
+<p>It never asks for seed phrases, private keys, or wallet passwords — not in the form, not by email, not ever. Anyone who asks for those is trying to steal a wallet, full stop. It also never promises recovery. Lost Bitcoin sells investigation, evidence, and guidance: a written record of what the evidence shows and the clearest next step from where you are. Sometimes that next step leads to access; sometimes it honestly doesn't, and the report says that too.</p>
+<h2>How the business makes money, in the open</h2>
+<p>Small flat fees for documented work — that's the whole model. The Investigation Report is $9.99 when a credible lead exists. The AI Guided Next Steps walkthrough is $6.99. A Wallet Report — the public record of one address, written up plainly — is $4.99 for the first address and $1.99 for each additional one. No percentages of your Bitcoin, no "release fees," no payment in crypto, no charges you weren't shown up front. If we can't help, we tell you for free; if we can, the price is the price.</p>
+""",
+        "faq": [
+            ("If the assessment is free, what's the catch?",
+             "There isn't one. The free step costs us a little automated checking and organization; what it earns us is that the people who do pay are people we can genuinely help. If your assessment finds no credible lead, we'll tell you plainly and you owe nothing — that's published policy on our 'when we will refuse your money' page."),
+            ("What counts as a credible lead?",
+             "Evidence that something specific is worth investigating: an address that was actually used, records from an exchange you had an account with, a wallet file, a device, or documents tying you to a purchase. Hope alone isn't a lead, and neither is a balance on an address that was never yours — the assessment classifies what it finds as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN."),
+            ("Why not just charge everyone a small fee for the assessment itself?",
+             "Because most assessments end with 'no credible lead,' and charging for that answer would punish exactly the people who most need a straight one. Free also keeps us honest: our income depends on finding real leads and documenting them well, not on collecting fees from everyone who walks in worried."),
+        ],
+    },
 ]
 
 
