@@ -531,6 +531,34 @@ GUIDES = [
              "Because most assessments end with 'no credible lead,' and charging for that answer would punish exactly the people who most need a straight one. Free also keeps us honest: our income depends on finding real leads and documenting them well, not on collecting fees from everyone who walks in worried."),
         ],
     },
+    {
+        "slug": "remember-exchange-try-logging-in",
+        "title": "You Remember the Exchange — Have You Actually Tried Logging In?",
+        "description": "Remember the exchange you bought Bitcoin on? The coins may still be sitting in that account. How to try logging in safely, fix a 2FA lockout, and what to do once you're in.",
+        "dek": "You remember the exchange. Coinbase, Kraken, Shakepay, QuadrigaCX — the name is right there in your memory. So here's the question almost nobody asks first: have you actually tried logging in? A surprising share of 'lost' Bitcoin is sitting in an account its owner simply never tried to re-enter.",
+        "body": """
+<h2>The most overlooked step in the whole search</h2>
+<p>When people say they "lost" their Bitcoin, they usually picture a missing wallet, a forgotten password, or a computer that's long gone. But often it's simpler: the Bitcoin is sitting in an exchange account the owner never tried to open again. The account still exists, the coins are still there — nobody has been back in years. Before digging through old devices, try the front door. It costs nothing, and it is the fastest answer in this whole space.</p>
+<h2>Go to the real site — type the address yourself</h2>
+<p>Never reach an exchange through a link in an email, a DM, a text, or an ad. That's where fake exchange sites live, and a fake login page will happily take your password and hand it to a thief. Type the exchange's address into your browser yourself — coinbase.com, kraken.com, shakepay.com — or open the official app from your phone's app store. If you're not sure of the address, search the exchange's name and check the result before clicking.</p>
+<h2>Try the original email, then the password reset</h2>
+<p>Sign in with the email you used when you bought — the one from that year, not necessarily your current one. If the password is gone, use the exchange's own "forgot password" link on the sign-in page. The reset goes to that original inbox, so if you no longer have access to it, recover the email account first. Write down what you try instead of hammering the same guesses over and over — most exchanges lock an account after repeated failures.</p>
+<h2>Locked out by two-factor authentication? That's normal — and fixable</h2>
+<p>Two-factor authentication (2FA) is the most common reason people give up: you changed phones, the authenticator app is gone, the backup codes are in a drawer you can't find. Every real exchange has a process for exactly this: identity-verification recovery, usually a photo ID and a selfie, sometimes with a waiting period. It is slow on purpose — that slowness is what stops a thief doing the same thing. Start it through the exchange's official support page, never through a person who messages you offering to "fix" it. The exchange's own process is free — anyone charging a fee to unlock your account is running a scam.</p>
+<h2>If the exchange no longer exists</h2>
+<p>Sometimes the front door is gone: exchanges shut down — QuadrigaCX is the famous Canadian example — and logging in is no longer an option. That is a different road: your own records — purchase emails, bank statements, tax filings — become the evidence, and the exchange's bankruptcy or claims process, if one exists, is the only official route. Our QuadrigaCX guide explains what happened there and what your records can still do: <a href="/guides/quadrigacx-lost-bitcoin">QuadrigaCX Took Your Bitcoin? What Happened — and What's Still Possible</a>.</p>
+<h2>Once you're in: don't move anything yet</h2>
+<p>If the login works and there is a balance, congratulations — and stop. Don't move anything in a panic. First, document what you see: write down the balances, transaction history, and dates, and download your statements. That record is evidence — for your taxes, your family, and any investigation that follows. Then decide what to do next, slowly — leaving it where it is while you think is almost always the safe choice. If the account shows nothing, that is also an answer: it tells the free assessment where the trail does not go, and the assessment classifies what you found — CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN — before any paid report is offered.</p>
+""",
+        "faq": [
+            ("I tried logging in and the exchange says my account doesn't exist. What now?",
+             "First, check the email — try every address you used around the time you bought, and check you're on the right exchange; similar names and old rebrands trip people up. If the exchange genuinely has no record of you, that is still useful information: it tells the free assessment to look elsewhere — old devices, wallet files, and bank statements — instead of chasing an account that was never there."),
+            ("The exchange wants a photo ID and a selfie to restore my account. Is that safe?",
+             "Yes — when you started the process yourself, on the exchange's real site or official app, and the request comes from the exchange's own support flow. Real exchanges verify identity this way because it is the only way to be sure the person asking is the account holder. Never send ID to a person who messages you, and never upload it through a link someone sent you — that is how identity theft starts."),
+            ("I got in and there's a balance. Should I move it right away?",
+             "No — document it first. Write down the balances, the transaction history, and the dates, and download your statements. That record is evidence for your taxes and your family, and it is what an investigation works from. Leaving the Bitcoin where it is while you think is almost always the safe choice; if you do move it, use the exchange's own withdrawal process, slowly, to a wallet you control. If you want the address's history documented in writing, a Wallet Report ($4.99 for the first address, $1.99 for each additional address) does exactly that — and the $6.99 AI Guided Next Steps walkthrough talks you through what to do next, only when a real lead exists."),
+        ],
+    },
 ]
 
 

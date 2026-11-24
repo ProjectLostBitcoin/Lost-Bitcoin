@@ -489,6 +489,7 @@ class Handler(BaseHTTPRequestHandler):
                     "- That old purchase confirmation email is evidence: https://lostbitcoin.org/guides/bitcoin-purchase-confirmation-email\n"
                     "- Found a hardware wallet? Don't guess the PIN: https://lostbitcoin.org/guides/found-hardware-wallet-pin\n"
                     "- Why our Bitcoin assessment is free: https://lostbitcoin.org/guides/why-bitcoin-assessment-is-free\n"
+                    "- Remember the exchange? Try logging in first: https://lostbitcoin.org/guides/remember-exchange-try-logging-in\n"
                     "## Tools\n"
                     "- Is this a Bitcoin recovery scam? Free checker: https://lostbitcoin.org/scam-check\n\n"
                     "## Contact\n"
