@@ -490,6 +490,7 @@ class Handler(BaseHTTPRequestHandler):
                     "- Found a hardware wallet? Don't guess the PIN: https://lostbitcoin.org/guides/found-hardware-wallet-pin\n"
                     "- Why our Bitcoin assessment is free: https://lostbitcoin.org/guides/why-bitcoin-assessment-is-free\n"
                     "- Remember the exchange? Try logging in first: https://lostbitcoin.org/guides/remember-exchange-try-logging-in\n"
+                    "- Bought Bitcoin in Canada in 2016–2017? Where it likely went: https://lostbitcoin.org/guides/bought-bitcoin-canada-2016-2017\n"
                     "## Tools\n"
                     "- Is this a Bitcoin recovery scam? Free checker: https://lostbitcoin.org/scam-check\n\n"
                     "## Contact\n"

@@ -559,6 +559,30 @@ GUIDES = [
              "No — document it first. Write down the balances, the transaction history, and the dates, and download your statements. That record is evidence for your taxes and your family, and it is what an investigation works from. Leaving the Bitcoin where it is while you think is almost always the safe choice; if you do move it, use the exchange's own withdrawal process, slowly, to a wallet you control. If you want the address's history documented in writing, a Wallet Report ($4.99 for the first address, $1.99 for each additional address) does exactly that — and the $6.99 AI Guided Next Steps walkthrough talks you through what to do next, only when a real lead exists."),
         ],
     },
+    {
+        "slug": "bought-bitcoin-canada-2016-2017",
+        "title": "Bought Bitcoin in Canada in 2016–2017? Where It Likely Went",
+        "description": "If you bought Bitcoin in Canada in 2016–2017, a short list of exchanges, ATMs, and marketplaces handled almost everyone. Which still exist, which are gone, and the records that can still tell you where yours went.",
+        "dek": "Canadians who bought Bitcoin in 2016 or 2017 almost all used the same handful of places. Which one you used decides everything about what to do next — and your bank records from that year can usually still tell you.",
+        "body": """
+<h2>The short list of where Canadians bought</h2>
+<p>In 2016–2017, most Canadians bought Bitcoin in one of a few places. <b>QuadrigaCX</b> was the biggest Canadian exchange of the era. <b>Coinsquare</b> also operated then. <b>Einstein Exchange</b> served a lot of buyers in British Columbia. Beyond exchanges, <b>Bitcoin ATMs</b> were common in cities, and <b>LocalBitcoins</b> matched buyers with individual sellers. Some Canadians also used international platforms, but for most people the answer is one of those names.</p>
+<h2>Why the name matters: still open, or gone</h2>
+<p>If the place you used still operates, your road is account recovery: go to its real site by typing the address yourself, try your original email, and use its own password-reset and identity-verification process. If it no longer exists, that road is closed and the work changes completely: the investigation runs on records — and on whether you ever withdrew the Bitcoin to a wallet of your own. QuadrigaCX is the famous Canadian case: it collapsed in 2019, and there is a specific, honest picture of what that means for former customers — see <a href="https://lostbitcoin.org/guides/quadrigacx-lost-bitcoin">our QuadrigaCX guide</a>. Einstein Exchange is also gone. LocalBitcoins shut down in 2023. A Bitcoin ATM purchase usually sent coins straight to a wallet address you provided, which makes that address the whole trail.</p>
+<h2>The records from that era that still survive</h2>
+<p>You don't have to rely on memory. Your bank can usually show Interac e-transfer history and card charges from 2016–2017 — the recipient name on the transfer often <i>is</i> the exchange name. Old email accounts hold welcome messages, purchase confirmations, and withdrawal notices. Tax filings from those years sometimes name the platform. Even a rough date plus a dollar amount is a strong starting point, because it narrows the list to one or two names.</p>
+<h2>The strongest lead from that era</h2>
+<p>If you ever withdrew Bitcoin from an exchange to your own wallet — a paper wallet, a phone app, a desktop wallet — that withdrawal is the best news an investigation can get. The destination address is visible on the public blockchain today: whether it was used, what it holds, and where the coins moved. An investigation can classify that trail honestly — CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN — and a Wallet Report ($4.99 for the first address) documents an address's public record in plain English. What no one can do is recreate keys that are gone, so be wary of anyone who promises otherwise.</p>
+""",
+        "faq": [
+            ("I think I used QuadrigaCX. Is there anything left to do?",
+             "There is an honest, limited picture — not nothing, and not a promise. QuadrigaCX collapsed in 2019 and its court-supervised process has largely run its course for customer claims. What still matters is whether you ever withdrew Bitcoin to your own wallet: that wallet is outside the collapse entirely. Our QuadrigaCX guide lays out the full picture, and the free assessment sorts out which branch your case is in."),
+            ("I bought from a Bitcoin ATM and only kept a paper receipt. Is that enough?",
+             "Often, yes — a receipt usually shows the date, the amount, and sometimes the wallet address the Bitcoin was sent to. That address can be checked on the public blockchain today. Even without the address, the date and amount help pin down which wallet you were using at the time."),
+            ("I can't remember if I ever withdrew anything. How would I know?",
+             "Look for a withdrawal confirmation email from the exchange, or check whether you still have a wallet app, a paper wallet, or a hardware wallet from that time. If an address turns up anywhere in your records, the public blockchain shows whether coins ever arrived at it. That's exactly what the free assessment is built to sort out — and it never asks for seed phrases, private keys, or passwords."),
+        ],
+    },
 ]
 
 
