@@ -583,6 +583,32 @@ GUIDES = [
              "Look for a withdrawal confirmation email from the exchange, or check whether you still have a wallet app, a paper wallet, or a hardware wallet from that time. If an address turns up anywhere in your records, the public blockchain shows whether coins ever arrived at it. That's exactly what the free assessment is built to sort out — and it never asks for seed phrases, private keys, or passwords."),
         ],
     },
+    {
+        "slug": "how-much-bitcoin-is-lost-forever",
+        "title": "How Much Bitcoin Is Lost Forever? What the Estimates Actually Say",
+        "description": "Estimates say millions of Bitcoin may be lost forever — but nobody can count them. What 'lost' really means, how the numbers are built, the famous cases, and why some 'lost' Bitcoin turns up.",
+        "dek": "You've probably heard the number: millions of Bitcoin, gone forever. It's one of the most searched questions in crypto — and one of the most misunderstood. Here's what the estimates actually say, and what they can't.",
+        "body": """
+<h2>The headline number</h2>
+<p>The most cited estimate comes from blockchain analysis firm Chainalysis, which has estimated that roughly <b>3.7 million Bitcoin</b> — somewhere around 17–20% of all the Bitcoin that will ever exist — may be lost or stranded. Other analysts land lower or higher depending on their assumptions. Every one of those numbers is an <i>estimate</i>, not a count, and the gap between them is the honest part of the story: nobody can know the true figure, because nobody can tell a lost key from a patient holder just by looking at the blockchain.</p>
+<h2>How anyone estimates this at all</h2>
+<p>The methods are indirect. Analysts look at coins that have not moved in many years — a decade of silence usually means the owner either lost access or is extraordinarily patient. They look at the earliest era of Bitcoin, when coins were worth almost nothing and were mined on home computers that were later wiped, sold, or thrown away. Roughly a million early coins attributed to Bitcoin's first miners have never moved at all. Layer statistical models of lost keys and dead hard drives on top of that, and you get a range — millions of coins, give or take a lot. Treat any single precise-sounding figure with suspicion.</p>
+<h2>What "lost" actually means</h2>
+<p>Here is the part that surprises people: lost Bitcoin never disappears. The coins sit on the public blockchain, visible to anyone, exactly where they were left. What is lost is the <b>private key</b> — the secret that proves ownership and allows the coins to move. Without it, no one can move them: not the owner, not a bank, not a court, not the person who wrote Bitcoin's code. That is not a bug or an oversight; it is the design. It also means every "lost Bitcoin" headline is really a story about a lost key, a lost password, or a lost device.</p>
+<h2>The famous cases</h2>
+<p>A Welsh man says a hard drive holding about 8,000 Bitcoin was thrown into a landfill in 2013, when the coins were worth far less; his efforts to excavate the site have been refused, and the drive — if it is there — has never been recovered. An engineer has described forgetting the password to an encrypted drive holding thousands of Bitcoin, with only a couple of guesses left before the device locks forever. Early miners wiped laptops that held coins worth cents at the time. These stories are real, and they are also the extreme end: most lost Bitcoin was lost quietly, in small amounts, by ordinary people who didn't keep records because there was no reason to.</p>
+<h2>Why some "lost" Bitcoin isn't</h2>
+<p>Not every dormant coin is lost, and not every lost wallet stays lost. Old devices surface in drawers. Exchange accounts get re-entered years later. Paper backups turn up in estate files. That is why an investigation starts with evidence — records, devices, addresses — and classifies what it finds honestly: CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. Some cases really are over, and an honest investigation says so. Others have a trail nobody had followed. The headline estimates can't tell you which kind yours is; only looking can. If you think you may have lost Bitcoin, start with <a href="https://lostbitcoin.org/guides/bought-bitcoin-years-ago-where-to-start">where to start</a> — and whatever you do, never share a seed phrase or password with anyone who offers to help.</p>
+""",
+        "faq": [
+            ("Can lost Bitcoin ever be recovered?",
+             "Only if a path to the keys survived: the wallet file, the backup words, the device itself, or an exchange account that can be re-entered. If the private key is truly gone, the coins are unreachable by anyone — that is how Bitcoin is designed. An investigation looks for what survived, and classifies what it finds as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. Anyone who guarantees recovery is not telling you the truth."),
+            ("If millions of Bitcoin are lost, does that make the rest worth more?",
+             "It reduces the number of coins actually available to trade, which is part of why these estimates get so much attention. Bitcoin's total supply is capped at 21 million either way; lost coins simply sit outside the market, possibly forever. Whether that matters for price is a market question — what matters here is that 'lost' is an estimate, and some of those coins may not be lost at all."),
+            ("I think I lost Bitcoin years ago. Where do I start?",
+             "With records, not guesses: bank statements, old emails, any device from that era, any address you wrote down. Our free assessment organizes what you remember and checks any address against the public blockchain, then tells you plainly whether there is a credible lead. It never asks for seed phrases, private keys, or wallet passwords — and neither should anyone else."),
+        ],
+    },
 ]
 
 
