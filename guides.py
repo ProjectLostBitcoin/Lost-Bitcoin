@@ -609,6 +609,30 @@ GUIDES = [
              "With records, not guesses: bank statements, old emails, any device from that era, any address you wrote down. Our free assessment organizes what you remember and checks any address against the public blockchain, then tells you plainly whether there is a credible lead. It never asks for seed phrases, private keys, or wallet passwords — and neither should anyone else."),
         ],
     },
+    {
+        "slug": "bitcoin-recovery-guarantee-scam",
+        "title": "Any Bitcoin 'Recovery' Service That Guarantees Results Is Lying to You",
+        "description": "No one can guarantee Bitcoin recovery — access depends entirely on what survived, which nobody knows until they investigate. Why the guarantee is always a lie, what honest services say instead, and how it pairs with release-fee scams.",
+        "dek": "If someone is promising you your Bitcoin back — guaranteed — they are lying to you. Not exaggerating. Not being optimistic. Lying. Here is why that promise can never be honest, and what an honest service says instead.",
+        "body": """
+<h2>Why a guarantee is impossible in principle</h2>
+<p>Bitcoin has no reset button, no head office, and no support desk that can hand your coins back. Access depends entirely on what survived: a wallet file on an old laptop, an exchange account that can still be re-entered, a paper backup in a drawer, a device nobody wiped. If the keys survived, access may be straightforward. If the only copy is gone, the coins are unreachable by anyone — permanently, by design. And here is the point: nobody knows which of those is true until someone actually investigates. Not you, not an investigator, not the person who wrote Bitcoin's code. A guarantee offered before that work is done is a promise about facts the promiser does not have. It cannot be an honest promise, because the outcome is decided by evidence nobody has seen yet.</p>
+<h2>What honest services say instead</h2>
+<p>An honest service talks about evidence, not outcomes. It classifies what it finds, in writing, as <b>CONFIRMED</b>, <b>STRONG POSSIBILITY</b>, <b>POSSIBLE LEAD</b>, or <b>UNKNOWN</b> — and it does that classifying before asking for money. That is why our assessment is free: it checks your records, your devices, and any address against the public blockchain, and tells you plainly whether a credible lead exists. A full Investigation Report ($9.99) is only offered when one does. A Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents what a single address shows. The AI Guided Next Steps walkthrough ($6.99) talks you through next steps — again, only when there is a real lead. Investigation, evidence, and guidance. Recovery is never guaranteed, and we never ask for seed phrases, private keys, or wallet passwords.</p>
+<h2>Why the guarantee works — and what it pairs with</h2>
+<p>The guarantee is not information. It is a sales weapon, aimed at hope and at grief — at the person who just lost money, or just lost a spouse, and wants one clear "yes." Once you believe the yes, the next step arrives: an upfront "release," "unlock," or "tax" fee to free the Bitcoin they claim to have found. Often they show you an address with a balance as proof. That proves nothing — balances are public, and anyone can display one. The full pattern, and how to test any service against it, is in our checklist: <a href="https://lostbitcoin.org/guides/bitcoin-recovery-service-scams">Bitcoin Recovery Service Scams: 9 Red Flags Before You Pay Anyone</a>. If they contacted you first, guarantee results, ask for your seed phrase, or want remote access to your computer, you do not need a second opinion. Walk away.</p>
+<h2>Our standard, as a worked example</h2>
+<p>Hold us to the same test. We will refuse your money when there is no credible lead: no report is offered, and checkout refuses one if it is attempted. That rule is published, in full, on our <a href="/guides/when-we-refuse-your-money">when we will refuse your money</a> page — and it is enforced by the site, not just promised in words. Prices are public before signup, payment goes through a real card checkout, and every finding separates what is confirmed from what is honestly unknown. If a service will not show you that much, in writing, before you pay, its guarantee is worth exactly what it costs to make: nothing.</p>
+""",
+        "faq": [
+            ("A service says it has a 100% success rate. Could that be true?",
+             "No. Success depends entirely on what survived in each case — a file, an account, a backup — and no service controls that. A 100% claim means they are cherry-picking easy cases, defining 'success' creatively, or lying. An honest service shows you the evidence classification for your case, in writing, before you pay anything."),
+            ("They only charge after recovery, so doesn't that make the guarantee safe?",
+             "No. A percentage-on-success deal is the model some legitimate wallet-file specialists use, but even they cannot promise an outcome before examining what survived — and the deal usually requires handing over your wallet file, which is its own risk. And watch the switch: 'pay after' scammers routinely invent a release, tax, or verification fee you must pay first. Any upfront fee to unlock your own money is a scam, and any request for a seed phrase, private key, or wallet password is theft."),
+            ("How do I find out whether my Bitcoin is reachable at all?",
+             "Start with evidence: old emails, bank statements, devices from that era, and any Bitcoin address you can find. Our free assessment organizes what you remember, checks any address against the public blockchain, and classifies the result as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. If there is no credible lead, you pay nothing — and new evidence, if it turns up later, reopens the case."),
+        ],
+    },
 ]
 
 

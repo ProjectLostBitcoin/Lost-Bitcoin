@@ -492,6 +492,7 @@ class Handler(BaseHTTPRequestHandler):
                     "- Remember the exchange? Try logging in first: https://lostbitcoin.org/guides/remember-exchange-try-logging-in\n"
                     "- Bought Bitcoin in Canada in 2016–2017? Where it likely went: https://lostbitcoin.org/guides/bought-bitcoin-canada-2016-2017\n"
                     "- How much Bitcoin is lost forever?: https://lostbitcoin.org/guides/how-much-bitcoin-is-lost-forever\n"
+                    "- Guaranteed Bitcoin recovery is a lie — here's why: https://lostbitcoin.org/guides/bitcoin-recovery-guarantee-scam\n"
                     "## Tools\n"
                     "- Is this a Bitcoin recovery scam? Free checker: https://lostbitcoin.org/scam-check\n\n"
                     "## Contact\n"
