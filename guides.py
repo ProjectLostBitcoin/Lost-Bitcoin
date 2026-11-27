@@ -633,6 +633,41 @@ GUIDES = [
              "Start with evidence: old emails, bank statements, devices from that era, and any Bitcoin address you can find. Our free assessment organizes what you remember, checks any address against the public blockchain, and classifies the result as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN. If there is no credible lead, you pay nothing — and new evidence, if it turns up later, reopens the case."),
         ],
     },
+    {
+        "slug": "executor-finds-crypto-statements",
+        "title": "You're the Executor and You Found Crypto on the Statements — First Steps",
+        "description": "Executor found crypto purchases on the deceased's statements? Preserve email and devices first, learn what statements prove, and document a date-of-death value for the estate accountant.",
+        "dek": "You're settling an estate and the statements show the deceased bought Bitcoin. Before you write it off — or rush — here are the calm first steps that protect the estate, the records, and the beneficiaries.",
+        "body": """
+<h2>Only the executor should act — a will grants authority, not access</h2>
+<p>If you are the executor, you should act for the estate. Beneficiaries and family members should pass what they find to you, rather than opening accounts or trying passwords themselves.</p>
+<p>A will grants legal authority. It does not grant technical access, contain passwords, or unlock a wallet. For an exchange account, the lawful route is the exchange's deceased-account process, usually with a death certificate and proof of authority — not logging in as the deceased. For a self-custody wallet, there is no company to call. Access depends on what survived: a device, a backup, or records pointing to one.</p>
+<h2>Preserve everything first</h2>
+<ul>
+<li><b>Do not delete the deceased's email.</b> Purchase confirmations, withdrawal notices, statements, and account-recovery paths run through email.</li>
+<li><b>Do not wipe or "clean up" devices.</b> An old laptop or phone may hold a wallet app, a wallet file, or the only backup. Tidying up too early is how trails disappear.</li>
+<li><b>Do not guess a hardware-wallet PIN.</b> A Ledger or Trezor can wipe itself after a few wrong tries. Leave it untouched and note where it was found.</li>
+<li><b>Keep paper as paper.</b> Statements, tax returns, and notebooks are evidence. If you find 12 to 24 words written down, do not photograph them, type them into a website, or send them to anyone. Store the paper securely, like cash. We never ask for seed phrases, private keys, or wallet passwords — from anyone, ever.</li>
+</ul>
+<h2>What statements prove — and what they don't</h2>
+<p>Statements can prove <b>CONFIRMED</b> facts: which exchange was used, the dates, and the amounts bought, sold, or withdrawn. A withdrawal record may point to a Bitcoin address the estate can check on the public blockchain.</p>
+<p>They do not prove current access. A purchase in 2017 does not prove the Bitcoin is still on that exchange, still in that wallet, or reachable today. It may have been moved, sold, or lost. An honest investigation keeps those categories separate — CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN — instead of turning an old statement into a promise. Recovery is never guaranteed.</p>
+<h2>The Canada tax piece: date-of-death valuation</h2>
+<p>In Canada, crypto is generally treated as property, deemed disposed of at fair market value immediately before death. The estate's accountant will usually need a defensible value at the date of death for any known holdings, plus records of what was held and where. This is general information, not tax or legal advice — the estate's accountant and lawyer make those calls.</p>
+<p>If the papers include a Bitcoin address, a Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents that address's public history and balance in plain English, including its value on a chosen date. That gives the estate file a clear, dated record for the accountant — no password or seed phrase needed.</p>
+<h2>Expect scam approaches aimed at estates</h2>
+<p>Estates are targeted. Families who mention inherited crypto in public receive direct messages from fake "recovery" services within hours. Ignore all DMs. No legitimate service contacts you first, guarantees recovery, charges a "release" fee, or asks for a seed phrase, private key, or wallet password. For the fuller family walkthrough, read <a href="https://lostbitcoin.org/guides/spouse-parent-passed-away-bitcoin">Your Spouse or Parent Passed Away and Had Bitcoin: First Steps for Families and Executors</a>.</p>
+<p>Start with our free assessment. It organizes what the statements show and classifies whether a credible lead exists. An Investigation Report ($9.99) is only offered when a credible lead exists; the AI Guided Next Steps walkthrough ($6.99) is likewise only for cases with a real lead. If there is no credible lead, you pay nothing — and the estate still has a clear record of what was checked.</p>
+""",
+        "faq": [
+            ("The statements prove Bitcoin was bought. Does that mean the estate can still access it?",
+             "No. Statements confirm the purchase — exchange, dates, amounts. Current access is a separate question that depends on whether the account, wallet, device, or backup survived. An investigation classifies that honestly as CONFIRMED, STRONG POSSIBILITY, POSSIBLE LEAD, or UNKNOWN, and never guarantees recovery."),
+            ("I'm a beneficiary, not the executor. Should I investigate on my own?",
+             "Pass what you find to the executor and let the executor act for the estate. A will grants the executor authority, not access, and exchanges expect to deal with the estate's lawful representative through their deceased-account process. Acting separately can complicate the estate file."),
+            ("What should I give the estate's accountant?",
+             "The statements, tax returns, and any known Bitcoin addresses, plus a dated record of each address's balance and value at the date of death. A Wallet Report ($4.99 for the first address, $1.99 for each additional address) documents an address's public history and balance in plain English. This is general information, not tax advice — your accountant makes the tax calls."),
+        ],
+    },
 ]
 
 
