@@ -433,6 +433,14 @@ class Handler(BaseHTTPRequestHandler):
                 self._security_headers()
                 self.end_headers()
                 self.wfile.write(body)
+            elif parsed.path in ("/logo.png", "/favicon.ico"):
+                body = (BASE_DIR / "logo.png").read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/png")
+                self.send_header("Content-Length", str(len(body)))
+                self._security_headers()
+                self.end_headers()
+                self.wfile.write(body)
             elif parsed.path == "/scam-check":
                 self._count_view(parsed)
                 self._send_text(200, guides.render_scam_check(),

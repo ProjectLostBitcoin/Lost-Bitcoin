@@ -30,13 +30,14 @@ def _page(title, description, path, body, extra_head=""):
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{BASE}{path}">
+<link rel="icon" type="image/png" href="/logo.png">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{BASE}{path}">
 <meta property="og:type" content="article">
 <style>{_CSS}</style>{extra_head}</head>
 <body><main><div class="card">
-<p class="crumb"><a href="/">Lost Bitcoin</a> · <a href="/guides">Guides</a></p>
+<p class="crumb"><img src="/logo.png" alt="Lost Bitcoin logo" style="width:26px;height:26px;border-radius:50%;vertical-align:-7px;margin-right:6px"><a href="/">Lost Bitcoin</a> · <a href="/guides">Guides</a></p>
 {body}
 </div></main></body></html>"""
 
